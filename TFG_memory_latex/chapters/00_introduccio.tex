@@ -1,0 +1,61 @@
+\cleardoublepage
+\phantomsection
+\chapter*{Introducción}
+Este TFG esta centrado en el concepto de teletrabajo y mas específicamente en los requisitos, herramientas y conceptos que se aplican en un trabajo remoto profesional. El caso de estudio se centra en la solución realizada a un problema logístico y familiar, para habilitar un espacio adecuado para el teletrabajo y las herramientas necesarias tanto desde el punto de vista del trabajador como desde la infraestructura en la nube de una empresa.
+
+\section{Objetivos}
+Los objetivos de este TFG son:
+\begin{itemize}
+    \item Planificar y solventar la necesidad de un espacio de teletrabajo (para este autor) y facilitar el home-office o flexwork, para la pareja del autor, debido a la incorporación de un nuevo miembro a la familia (Chloe).  
+    
+    \item Investigar, recopilar y resumir un estado del arte tanto infraestructura (física) como herramientas e infraestructura de software (virtuales).
+    
+    \item Definir los requisitos y un ejemplo de implementación de una oficina física, para la realización del teletrabajo de este autor. Implementarlo y evaluar los resultados o puntos de mejora y comparativas con oficinas / setups previos.
+    
+    \item Definir e implementar, una nube con los servicios mínimos para realizar teletrabajo, de especial interés para autónomos, pequeñas y medianas empresas o startups tecnológicas.
+    
+    \item Simplificar y automatizar el proceso, con el objetivo de poder usar el resultado practico de este TFG, como elemento genérico o producto fácilmente desplegable sin necesidad de conocimientos profundos.
+
+\end{itemize}
+
+\section{Requisitos}
+
+La definición de trabajo en remoto, difiere según el porcentaje de jornada laboral realizada;  la ubicación desde dónde se realiza; la topología y forma de la empresa y el estatus jurídico del trabajador.  En el anexo \ref{S:anexo_A}, se desarrollan los diferentes tipos o escalas de teletrabajo, sin embargo la casi totalidad de desarrollo técnico de \textbf{este documento se centra en la modalidad de “home office” de un 60-100\%}, es decir, trabajar desde casa e ir 1-2 días por semana o en ocasiones específicas. Por consiguiente una parte importante de este documento se centra en los requisitos y caso practico de 'una oficina física de desarrollo tecnológico' para teletrabajar.
+
+¿Qué entendemos como una oficina de desarrollo tecnológico? Todos aquellos trabajos que se involucran en el desarrollo (mantenimiento o creación)  de productos/servicios tecnológicos. Esto está intrínsecamente relacionado con software y una de las siguientes necesidades más demandadas por pymes (pequeña y mediana empresa):
+
+\begin{itemize}
+    \item Desarrollo de software: sin incluir los nuevos productos, existe una necesidad de digitalizar todo proceso en papel, manual o burocrático así como actualizar viejos software para su uso extendido en ‘la nube’; o el digital twin\cite{c_digital_twin} que permite representar elementos físicos en el mundo digital y realizar simulaciones. 
+
+    \item Infraestructura en la nube:  permitir el acceso des-localizado, el escalado y la flexibilidad de gestión al tener recursos en una nube, tanto como servicio como el soporte asociado.
+    
+    \item Infraestructura tecnológica (redes \& hardware), acceso, actualización y puesta en marcha tanto de servidores, seguridad, sensores, oficinas o elementos para el teletrabajo.
+    
+    \item Análisis de datos: existe un nuevo mercado basado en la gran cantidad de datos y el minado y procesado de los mismos con fines optimizadores o como subproducto derivado.
+    
+    \item Electrónica, sensores, impresión 3D y prototipado: puede resumirse en llevar las nuevas tecnologías low cost al mercado tradicional, permitiendo un grado tecnológico en pequeñas empresas o explotaciones, anteriormente solo utilizado en grandes empresas.
+
+    \item Ciberseguridad y temas legislativos: los nuevos riesgos y deberes implica que una actividad se digitalice.
+
+\end{itemize}
+
+¿Qué significa esto para los requisitos de nuestra oficina de desarrollo? Básicamente que un componente muy significativo obligatorio debe estar centrado en la infraestructura física del trabajador y la gestión o creación de una nube digital por parte de la empresa. 
+
+Independientemente de que tipo de trabajador y donde sea el lugar de la actividad ¿Qué necesita un técnico para desarrollar un trabajo en remoto?
+
+\begin{itemize}
+    \item Un espacio físico, internet, luz, hardware, temperatura, control de horarios … que nombraremos requisitos físicos.
+    
+    \item Software y plataforma de comunicación directa, ya sean salas, teléfono, herramientas informáticas (correo,  videoconferencia, red social corporativa, página web), organizar/almacenar/monitorizar el trabajo realizado.
+
+    \item Redes, Vpn, capas de seguridad de aislamientos, seguridad.
+    
+    \item Wiki, documentación, guías o código de buenas prácticas, que no solo faciliten la producción de los proyectos sino que eviten problemas estructurales y promuevan un mantenimiento ágil así como definen la dinámica de trabajo desde el punto de vista humano.
+    
+\end{itemize}
+
+Durante los diferentes apartados de este documento, se irán desglosando los diferentes temáticas de interés iniciando desde un punto de vista genérico dando paso a un caso específico para finalmente exponer la implementación de “mi oficina” realizada por este autor, y la nube digital asociada. El documento principal introduce y desarrolla las utilidades y conceptos utilizadas así como los resultados obtenidos pero la gran parte del contexto, razonamientos y detalles o comparativas se predisponen en los anexos adjuntos o en algunos casos en documentos externos no adscritos a esta memoria.
+
+Este TFG esta segmentado en 3 partes, capitulo \ref{S:tema_1}, anexos \ref{S:anexo_A} y \ref{S:anexo_B}, focalizados en la perspectiva del trabajador. Capitulo \ref{S:tema_2} y \ref{S:tema_3} y anexos \ref{S:anexo_C}, \ref{S:anexo_D}, \ref{S:anexo_E} focalizados en la infraestructura necesaria desde el punto de vista técnico-empresarial. Y capitulo \ref{S:tema_4} centrado en las dinámicas de trabajo en grupo, buenas practicas o metodología en desarrollo de software.
+
+Finalmente en el anexo \ref{S:anexo_F} las conclusiones obtenidas en casos reales al implementar la base proporcionada por la 'oficina física y virtual', se evalúan y mencionan varios sub-proyecto personales así como la aplicación en varios negocios reales.

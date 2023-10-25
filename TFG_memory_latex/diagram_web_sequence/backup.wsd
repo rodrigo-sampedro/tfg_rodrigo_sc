@@ -1,0 +1,20 @@
+title Backup Service diagram flow
+
+participant Cron Timer as CT
+participant VPS Server as VPS
+participant ExternalServer as ES
+
+CT->+VPS: Time scheduler trigger
+VPS->VPS: Stop Main dockerized services.
+VPS->VPS: Backup auxiliary services like DB in files (SQL).
+VPS->VPS: Stop all dockerized services.
+VPS->+ES: Start Re-syncr command with volume folders.
+note right of ES: Synchronize and store last volumes backup
+ES->-VPS:
+ES->+ES: Start backup storage process 
+note right of ES: Use duplicaty or autorestic.
+ES->-ES:
+VPS->VPS: Start all dockerized services.
+note right of VPS: End backup process
+VPS->-CT:
+

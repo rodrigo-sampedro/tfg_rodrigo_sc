@@ -1,0 +1,1165 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%                                                                  %%%%% 
+%%%%%%          Maqueta de memòria TFC/PFC de l'EETAC                   %%%%% 
+%%%%%%                                                                  %%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                         %%
+%%          Autor: Xavier Prats i Menéndez (xavier.prats@upc.edu)          %% 
+%%                  Technical University of Catalonia (UPC)                %%
+%%                                                                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%      This work is licensed under the Creative Commons  Attribution-     %%
+%%   -Noncommercial-Share Alike 3.0 Spain License. To view a copy of this  %% 
+%%    license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/es/  %%
+%%    or send a letter to Creative Commons, 171 Second Street, Suite 300,  %%
+%%                  San Francisco,California, 94105, USA.                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Versió 2.1 - Juliol 2012                                                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% NOTA: els seguents packages son necessaris per utilitzar la
+%%%       plantilla seguent:
+%%%       ifthen,calc,helvet,pslatex,fancyhdr,nextpage,subfigure,tocloft,graphicx,url
+
+%%% NOTA: Es possible que algunes distribuicions Linux o Windows.
+%%%       no portin aquests paquets instal·lats per defecte.
+%%%       En aquest cas els haureu d'instal·lar manualment.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1- INICIALITZACIÓ
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[spanish,final]{setup/eetac_tfc_pfc}
+%% * OPCIONS A CONFIGURAR al \documentclass
+%%    - Estat del document: final o draft
+%%      NOTA: Draft no inserta les figures i marca només l'espai que
+%%      ocupen. També s'indica quan el text sobrepassa els marges.
+%%      Draft és molt útil per compilar ràpid el document si no és important
+%%      en aquell moment visualitzar les figures.
+%%    - Idioma PRINCIPAL del document: catalan, spanish, english, french...
+
+\usepackage[english,spanish]{babel}
+%%  * INCLOURE TOTS ELS IDIOMES QUE S'USARAN EN EL DOCUMENT
+%%    NOTA: per canviar d'idioma al mig del document usar:
+%%          \selectlanguage{nom_idioma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2- CÀRREGA DE PAQUETS ADICIONALS (OPCIONALS)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% NOTA: Es possible que algunes distribuicions Linux o Windows.
+%%%       no portin aquests paquets instal·lats per defecte.
+%%%       En aquest cas els haureu d'instal·lar manualment.
+
+%% El paquet inputenc és extramadament útil. 
+%% Permet escriure els accents directament amb l'editor de texte
+%% sense haver de fer coses com per exemple: introducci\'o
+%% Heu d'especificar la codificació de caracters que utilitzeu pel
+%% vostre fitxer (en aquest exemple utf8)
+\usepackage[utf8]{inputenc}
+
+%% Símbols matemàtics de la American Mathematical Society
+\usepackage{amssymb,amsmath, amsfonts}  
+
+%% El paquet array proporciona eines molt útils a l'hora de fer 
+%% equacions amb matrius
+\usepackage{array}             
+
+%% Paquet que permet fer taules fusionant cel·les de files consecutives
+\usepackage{multirow}          
+
+%% Paquet molt útil en cas de tenir taules molt llargues que 
+%   ocupin vàries pàgines
+\usepackage{longtable}          
+
+%% Permet canviar els colors del document
+%\usepackage{color,colortbl}
+
+%% Paquet molt útil que permet activar links en el PDF final.
+%% * NO OBLIDAR DE CONFIGURAR els quatre primer camps!
+\usepackage[
+  pdfauthor={Rodrigo Sampedro Casis},            % Configurar adientment
+  %pdftitle={Treball Fi de Carrera - autor}, % Configurar adientment
+  %pdfsubject={Titol del TFC aqui},          % Configurar adientment
+  % Modificació respecte a la versió 2.1 - Iván Padilla Montero - Juliol 2014
+  pdftitle={Treball Fi de Grau - autor}, % Configurar adientment
+  pdfsubject={Desarrollo de una Oficina de Ingeniería Remota: Análisis y Implementación de una Solución en el Contexto del Teletrabajo},          % Configurar adientment  
+  pdfkeywords={keyword1, keyword2, ...},    % Configurar adientment
+  pdfcreator={EETAC-UPC}, 
+  pdfproducer={LaTeX, dvipdf},
+  pdfdisplaydoctitle=true, plainpages=false, linktocpage=true,         
+  colorlinks=true, linkcolor=blue,citecolor=blue,urlcolor=blue,
+  hyperfootnotes=false, pagebackref=true, pdfpagelabels=true,
+  pdfpagemode=UseOutlines,
+]{hyperref} 
+
+%% NOTA IMPORTANT!:
+%% Per tal que hyperef funcioni correctament amb els capitols o seccions no
+%% numerats (\chapter*{}), com per exemple introducció, conclusions i bibliografia
+%% cal posar les dues comandes seguents ABANS del \chapter*{} en questió
+%\cleardoublepage
+%\phantomsection
+
+%% Permet trencar links URL. 
+%% Atenció! afegir aquest paquet DESPRES del hyperref!!
+\usepackage{breakurl} 
+
+%% Permet arranjar matricialment multiples figures
+%% NOTA: afegir aquest paquet DESPRES del hyperref!!
+%%       Si no es desitja utilitzar aquest paquet, comentar la linia seguent
+%%       i anar TAMBE al fitxer de classe (eetac_tfc_pfc.cls) per substituir: 
+%%       \RequirePackage[subfigure]{tocloft}  per  \RequirePackage{tocloft}
+\usepackage{subfigmat}         
+
+
+% definicion de bloques de codigo
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+
+\lstdefinestyle{yaml}{
+     basicstyle=\color{blue}\footnotesize,
+     rulecolor=\color{black},
+     string=[s]{'}{'},
+     stringstyle=\color{blue},
+     comment=[l]{:},
+     commentstyle=\color{black},
+     morecomment=[l]{-}
+ }
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                                   
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+
+\lstdefinestyle{yaml}{
+     basicstyle=\color{blue}\footnotesize,
+     rulecolor=\color{black},
+     string=[s]{'}{'},
+     stringstyle=\color{blue},
+     comment=[l]{:},
+     commentstyle=\color{black},
+     morecomment=[l]{-}
+ }
+
+
+\lstset{style=mystyle}
+
+\renewcommand\lstlistingname{Code}
+\renewcommand\lstlistlistingname{Bloques de Código}
+\newcommand{\tony}[1]{\textcolor[rgb]{0.0,0.0,1.0}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 3- DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Configuració de les dades i variables boleanes rellevants del document:
+\input{setup/dades.tex}  
+
+%%% Configuració de MACROS o ENTORNS (opcionals) definides per l'usuari:
+\input{setup/user-macros.tex}  
+
+%%% Configuració manual de les regles d'hyphenation:
+\input{setup/hyphenation.tex}  
+
+\begin{document}
+
+%% Seleccionar l'idioma principal del document:
+\selectlanguage{spanish}
+
+\beforepreface  
+
+%% RESUM i OVERVIEW
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NOTA: les longituds passades com a parametres d'entrada  s'han
+%        d'ajustar manualment fins que el requadre del resum/overview
+%        ocupi tota la pàgina. 
+
+%%% Resum en català (o castellà)
+\selectlanguage{spanish}   
+\begin{resum}{10cm}
+Actualmente el mundo tecnológico sufre una expansión sin precedentes debido a la cuarta revolución industrial\cite{c_revolucion_4_0} y el acceso o actualización de las pequeñas y medianas empresas a las tecnologías de la información\cite{c_pyme_digital}. Esto ha supuesto la llegada de una amplia oferta de empleos de escasa inversión material, alta capacitación curricular y la posibilidad de des localización de los empleados, favoreciendo el crecimiento de lo que se ha venido a conocer como “la ingeniería en remoto”\cite{c_remote_work_stat_uk} \cite{c_remote_work_stat_talent}. Los empleados que han entrado en este nuevo  ambiente de trabajo, tienen herramientas similares debido a su condición de “remoto” mayoritario, independientemente de si pertenecen a una gran empresa o una startup, sean freelances o subcontratados por consultoras externas.\newline
+\newline
+Paralelamente, tras la pandemia de COV-19\cite{c_covid_remote}, se ha evidenciado la necesidad y facilidad del trabajo en remoto así como la conciliación del home office. Sin embargo, ha creado la falacia del ingeniero con un ordenador, capaz de trabajar desde casa con compañeros que no se conocen físicamente, así como la vuelta irremediable a la oficina por pérdida de productividad en muchas empresas\cite{c_back_office}.\newline
+\newline
+Este TFG  analiza, evalúa e implementa una solución a la creación de una oficina de desarrollo de ingeniería en remoto, explotada y utilizada por el propio autor del mismo, detallando los problemas encontrados y las soluciones halladas e implementadas durante la construcción de esta. \newline
+\newline
+En los anexos se resume el estado de arte de los principales puntos de interés, especialmente en el ámbito tecnológico, así como se presenta una posible guía para la puesta en marcha de una startup tecnológica a partir del trabajo realizado, y desde un punto de vista técnico, puesto que los requisitos son tanto aplicables para un trabajador en remoto, como para un trabajador por cuenta ajena, o bien aplicable al desarrollo inicial de una empresa con pocos trabajadores.\newline
+\newline
+ El objetivo principal es obtener un set mínimo de recursos que permitan de una manera genérica, sin un coste excesivo, permitir un correcto desarrollo de la actividad, sorteando problemas y facilitando la creación de herramientas de trabajo colaborativo.\newline
+\newline
+Asimismo se ha utilizado esta plantilla como base de proyectos personales y como implementación activa en varias empresas pyme de familiares y amigos del propio autor.
+
+\end{resum}
+
+%%% Resum en anglès
+\selectlanguage{english}   
+\begin{overview}{10cm}
+At the moment, the technological world is undergoing an unprecedented expansion due to the fourth industrial revolution\cite{c_revolucion_4_0} and the access or update of small and medium-sized enterprises to information technologies\cite{c_pyme_digital}. This has led to the emergence of a wide range of jobs with low material investment, the requirement of high curriculum qualification, and the possibility of employee delocalization, promoting the growth of what has come to be known as "remote engineering"\cite{c_remote_work_stat_uk} \cite{c_remote_work_stat_talent}. Employees who have entered this new work environment use similar tools due to their predominantly "remote" condition, regardless of whether they belong to a large company or a startup, or being freelancers, or being subcontracted by external consulting firms.\newline
+\newline
+In parallel, the COVID-19 pandemic\cite{c_covid_remote}, the need and ease of remote work, as well as the balance of home office, have become evident. However, it has created the fallacy of the engineer with a computer, capable of working from home with colleagues they have never met physically, as well as the inevitable return to the office due to a loss of productivity in many companies\cite{c_back_office}.\newline
+\newline
+This Bachelor's Degree analyzes, evaluates, and implements a solution for creating a remote engineering development office, used by the author on his own, detailing and explaining the problems and solutions undertaken during its construction.\newline
+\newline
+In the appendices, the state of the art of the main points of interest regarding the project is summarized, especially in the technological field, and a possible guide for launching a technology startup from a technical perspective is presented since the requirements are applicable to both remote and in-house workers, or even to the initial development of a company with few employees.\newline
+\newline
+The main goal is to obtain a minimal set of resources that, in a fairly generic manner and without excessive cost, enable the proper development of activities, overcoming challenges, and facilitating the creation of collaborative work tools.\newline
+\newline
+Furthermore, this template has been used as the basis for personal projects and actively implemented in several family and friend-owned SMEs.
+
+\end{overview}
+
+% Tornar a l'idioma principal del document
+\selectlanguage{spanish}  
+
+%NOTA: En cas d'utilitzar l'espanyol com a idioma principal del document, el
+%      latex anomena les taules com a 'Cuadros'. Si es desitja canviar aquesta
+%      nomenclatura i utilitzar la paraula 'Tabla' descomentar les línies següents:
+\def\listtablename{Índice de tablas}
+\def\tablename{Tabla}%
+
+
+% Amb aqueta comanda indiquem que ja s'han inclòs tots els apartats del prefaci del 
+% projecte o podem començar a incloure els capitols de la memòria
+\afterpreface
+
+\clearpage
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% INCLOURE A PARTIR D'AQUÍ TOTS ELS CAPÍTOLS DE LA MEMORIA   %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% NOTA: recordar que la introducció i les conclusions són capítols NO
+%       enumerats, per tant s'ha d'usar \chapter*
+
+% NOTA: és aconsellable incloure els capítols de la memòria en fitxers 
+%       separats utlitzant la comanda \input  Per exemple:
+%       \input{capitol1}  
+%       que farà que s'inclogui el fitxer capitol1.tex
+
+% NOTA: Si es vol incloure agraïments i/o glosari, fer-ho utilitzant 
+% \chapter*{} i incloure'ls abans la introducció
+
+\input{chapters/00_introduccio}
+\input{chapters/01_oficina_fisica}
+\input{chapters/02_servicios_herramientas}
+\input{chapters/03_redes}
+\input{chapters/04_desarrollo}
+\input{chapters/05_conclusions}
+
+
+%%%  BIBLIOGRAFIA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Per la bibliografia hi ha 2 opcions: generarla amb la utilitat BibTeX 
+%%%                                      o fer-la ''a ma''
+%%% NOTA: podeu trobar facilment informació sobre BibTeX a:
+%%%  http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
+
+%%% OPCIO 1: BibTeX (recomanat) -> descomentar les comandes seguents:
+%\bibliographystyle{unsrt}   %% Estil de bibliografia EETAC
+%\cleardoublepage
+%\phantomsection
+% Indicar aqui el(s) fitxer(s) que contenen la bibliografia
+%\bibliography{citacion-01.bib}  
+%\pdfbookmark{Bibliografia}{sec:biblio}
+
+%%% OPCIO 2: bibliografia manual
+%%%
+%%% L'argument d'entrada es el numero de referencies que s'inclouen
+\cleardoublepage
+\phantomsection
+\begin{thebibliography}{2}
+
+%% Llibres:  Autor/s (cognoms i inicials dels noms), títol del llibre (en cursiva), editor, ciutat i any de publicació. Quan es cita el capítol d'un llibre s'ha d'indicar el títol del capítol (entre cometes), el títol del llibre (en cursiva) i els números de pàgines amb la primera i la darrera incloses.
+
+%%  Citas Resumen
+\bibitem{c_revolucion_4_0} 
+López Cristina, Solana-González Pedro y Vanti Adolfo.
+``Industria 4.0: la transformación digital de las empresas''.
+(\href{https://www.researchgate.net/publication/360877564_Industria_40_la_transformacion_digital_de_las_empresas}{Link} ISBN 2199-8531. 05-2022): 15-35 .
+
+\bibitem{c_pyme_digital} 
+Jarosław Brodny y Magdalena Tutak.
+``Digitalization of Small and Medium-Sized Enterprises and Economic Growth: Evidence for the EU-27 Countries''. {\it Journal of Open Innovation: Technology, Market, and Complexity, volume 8, number 2}.
+(\href{https://www.sciencedirect.com/science/article/pii/S2199853122000087}{Link} ISBN 978-84-18167-15-7 2022).
+
+\bibitem{c_remote_work_stat_uk} 
+Andrew Fennell 
+``Remote working statistics UK''. {\it Standout CV}.
+(\href{https://standout-cv.com/remote-working-statistics-uk}{Link} 2023).
+
+\bibitem{c_remote_work_stat_talent} 
+Equipos y talento Blog
+``Un 82\% de las compañías ha implantado el teletrabajo''. {\it Equipos y talento}.
+(\href{https://www.equiposytalento.com/noticias/2023/02/21/un-82-de-las-companias-ha-implantado-el-teletrabajo}{Link} 21-02-2023).
+
+\bibitem{c_covid_remote} 
+Blszczyk Michal,  Popovi, Milan,  Zajdel, Karolina, y Zajdel Radoslaw
+``The impact of COVID-19 on remote work: A global natural experiment''. {\it Sustainability Volume 14 Number 20}.
+(\href{https://www.mdpi.com/2071-1050/14/20/13373/pdf}{Link} ISSN 2071-1050  2022).
+
+\bibitem{c_back_office} 
+ Katie Burke
+``Biggest Tech Companies Walk Back Remote-Work Policies''. {\it CoStar News}.
+(\href{https://www.costar.com/article/1350827524/biggest-tech-companies-walk-back-remote-work-policies}{Link} 12-2022).
+
+\bibitem{c_boe_teletrabajo} 
+ Jefatura del Estado del Reino de España
+``Ley 10/2021, de 9 de julio, de trabajo a distancia.''. {\it BOE núm. 164, de 10 de julio de 2021}.
+(\href{https://www.boe.es/eli/es/l/2021/07/09/10}{Link} 
+BOE-A-2021-11472 ).
+
+\bibitem{c_work_remote_eurofound} 
+Jon Messenger, Oscar Vargas Llave, Lutz Gschwind, Simon Boehmer, Greet Vermeylen y Mathijn Wilkens
+``Working anytime, anywhere: The effects on the world of work''. {\it Eurofound }.
+(\href{https://www.eurofound.europa.eu/sites/default/files/ef_publication/field_ef_document/ef1658en.pdf}{Link} ISBN 978-92-897-1569-0  2017).
+
+\bibitem{c_overemployed} 
+Overemployed Blog community.
+``Overemployed, tools, setup, software and books.''.
+(\href{https://overemployed.com/}{Link} , 2000-23).
+
+
+\bibitem{c_oecd_productividad_telework} 
+Santo Milasi and Ignacio González-Vázquez y Enrique Fernández-Macías
+``Telework before the COVID-19 pandemic''. {\it OECD Productivity Working Papers}.
+(\href{https://www.oecd-ilibrary.org/content/paper/d5e42dd1-en}{Link}  Number 21 2021).
+
+\bibitem{c_boe_pandemia} 
+ Jefatura del Estado del Reino de España
+``Real Decreto-ley 8/2020, de 17 de marzo de medidas urgentes extraordinarias para hacer frente al impacto económico y social del COVID-19''. {\it BOE núm. 73, de 18/03/2020.}.
+(\href{https://www.boe.es/eli/es/rdl/2020/03/17/8/con}{Link} 
+BOE-A-2020-3824 ).
+
+\bibitem{c_trabajador_quemado} 
+ Manuel Fidalgo Vega, Instituto Nacional de Seguridad e higiene en el trabajo (INSST)
+``NTP 704: Síndrome de estar quemado por el trabajo o
+"burnout" (I): definición y proceso de generación''. {\it CENTRO NACIONAL DE CONDICIONES DE TRABAJO.}.
+(\href{https://www.insst.es/documents/94886/326775/ntp_704.pdf}{Link} 
+NTP 704, 2003).
+
+\bibitem{c_digital_twin} 
+ Angira Sharma, Edward Kosasih, Jie Zhang, Alexandra Brintrup y Anisoara Calinescu
+``Digital Twins: State of the art theory and practice, challenges, and open research questions''. {\it Journal of Industrial Information Integration, Volume 30.}.
+(\href{https://www.sciencedirect.com/science/article/pii/S2452414X22000516}{Link} 
+ISSN 2452-414X, 2022 ).
+
+\bibitem{c_postura} 
+Rahman Chowdury, Uddin Syed, Karim, M. y Ahmed Mohiuddin
+``Evaluation of work postures - The associated risk analysis and the impact on labor productivity''. {\it Journal of Engineering and Applied Sciences, Volume 10 2542 - 2550.}.
+(\href{https://www.researchgate.net/publication/275892689_Evaluation_of_work_postures_-_The_associated_risk_analysis_and_the_impact_on_labor_productivity}{Link} , 04-2015).
+
+\bibitem{c_postura_covid} 
+Akulwar-Tajane Isha, Darvesh Musfira, Ghule Maithili, Deokul Spandita, Deora Bhavna y Mhatre Vedika
+``Effects of COVID -19 Pandemic Lock Down on Posture in Physiotherapy Students: A Cross Sectional Study''.
+(\href{https://www.researchgate.net/publication/349179203_Effects_of_COVID_-19_Pandemic_Lock_Down_on_Posture_in_Physiotherapy_Students_A_Cross_Sectional_Study}{Link} , 01-2021).
+
+\bibitem{c_guia_hardware} 
+Sampedro Casis, Rodrigo
+``Selección de hardware, guia y contexto histórico.''.
+(\href{https://github.com/rodrigo-sampedro/tfg_rodrigo_sc/blob/main/extra_documents/Seleccion\%20de\%20Hardware.pdf}{Link} , 2023).
+
+\bibitem{c_resolucion_estadisticas_W3Schools} 
+W3Schools
+``Browser Display Statistics.''.
+(\href{https://www.w3schools.com/browsers/browsers_display.asp}{Link} , 2000-23).
+
+\bibitem{c_pia} 
+lucera
+``PIA electricidad: Qué es y para qué sirve''.
+(\href{https://lucera.es/blog/pia-electricidad-que-es-y-para-que-sirve}{Link} , 2023).
+
+\bibitem{c_wimax_tech} 
+Wikipedia, La enciclopedia libre.
+``Worldwide Interoperability for Microwave Access.''.
+(\href{https://es.wikipedia.org/wiki/WiMAX}{Link} , 2023).
+
+\bibitem{c_starlink_tech} 
+Wikipedia, La enciclopedia libre.
+``Starlink.''.
+(\href{hhttps://es.wikipedia.org/wiki/Starlink}{Link} , 2023).
+
+\bibitem{c_dsl_tech} 
+Wikipedia, La enciclopedia libre.
+``Digital subscriber line: DSL.''.
+(\href{https://en.wikipedia.org/wiki/Digital_subscriber_line}{Link}, 2023).
+
+\bibitem{c_plc_tech} 
+Wikipedia, La enciclopedia libre.
+``Power Line Communications.''.
+(\href{https://es.wikipedia.org/wiki/Power_Line_Communications}{Link}, 2023).
+
+\bibitem{c_inhouse_outsource} 
+Alicia Zambrano Braun
+``Inhouse vs. Outsourcing – ¿Cuál elegir y cuándo?''.
+(\href{https://www.sortlist.es/blog/outsourcing/}{Link}, 2023).
+
+\bibitem{c_boe_fibra} 
+ Jefatura del Estado del Reino de España
+``Orden ECE/1166/2018, de 29 de octubre.''. {\it BOE núm. 270, de 8 de noviembre de 2018}.
+(\href{https://www.boe.es/diario_boe/txt.php?id=BOE-A-2018-15341}{Link} 
+BOE-A-2018-15341 ).
+
+\bibitem{c_licencias} 
+Phil Odence
+``Five types of software licenses you need to understand''.{\it Synopsys blog.}.
+(\href{https://www.synopsys.com/blogs/software-security/5-types-of-software-licenses-you-need-to-understand.html}{Link}, 2023).
+
+\bibitem{c_cg_nat}
+Wikipedia, La enciclopedia libre.
+``Carrier Grade NAT''.
+(\href{https://es.wikipedia.org/wiki/Carrier_Grade_NAT}{Link}, 2023).
+
+\bibitem{c_vps_ovh} 
+Web page OVH SAS.
+``VPS OVH cloud euro prices.''.
+(\href{https://www.ovhcloud.com/es-es/vps/}{Link}, 2023).
+
+\bibitem{c_vps_time4vps} 
+Web page Time4 VPS.
+``VPS Time4 VPS euro prices.''.
+(\href{https://www.time4vps.com/linux-vps/}{Link}, 2023).
+
+\bibitem{c_ansible} 
+Ansible project web page.
+``Ansible simplest automate aps and IT infraestructure software.''.
+(\href{https://www.ansible.com/}{Link}, 2023 ).
+
+\bibitem{c_docker_network} 
+Docker Community.
+``Docker Network documentation.''.
+(\href{https://docs.docker.com/network/}{Link}, 2023).
+
+\bibitem{c_docker} 
+Docker web page.
+``Docker entorno en tiempo de ejecucion para la creacion y gestion de contenedores.''.
+(\href{https://www.docker.com/}{Link}, 2023).
+
+\bibitem{c_dind} 
+Docker community \& Tianon Docker project.
+``Docker in Docker.''.
+(\href{https://hub.docker.com/_/docker}{Link}, 2023 ).
+
+\bibitem{c_dood} 
+Luc Juggery.
+``Docker Tips : about /var/run/docker.sock''.
+(\href{https://betterprogramming.pub/about-var-run-docker-sock-3bfd276e12fd}{Link}, 2023 ).
+
+\bibitem{c_docker_gen} 
+Ngix-proxy community.
+``Generate files from docker container meta-data''.
+(\href{https://github.com/nginx-proxy/docker-gen}{Link}, 2023).
+
+\bibitem{c_docker_sysbox} 
+Nestybox company and community.
+``An open-source, next-generation "runc" that empowers rootless containers to run workloads such as Systemd, Docker, Kubernetes, just like VMs.''.
+(\href{https://github.com/nestybox/sysbox}{Link}, 2023).
+
+\bibitem{c_docker_compose} 
+Docker Compose documentación, web page.
+``Docker Compose herramienta de gestion multi-container.''.
+(\href{https://docs.docker.com/compose/}{Link}\href{https://github.com/docker/compose}{source}, 2023).
+
+\bibitem{c_docker_swarm} 
+Docker Swarm documentación web page.
+``Docker Swarm herramienta de gestion multi-container clusterizado.''.
+(\href{https://docs.docker.com/engine/swarm/}{Link}, 2023).
+
+\bibitem{c_kubernetes} 
+Kubernetes web page.
+``kubernetes plataforma opensource de cluster de contenedores''.
+(\href{https://kubernetes.io/es/}{Link}, 2023).
+
+\bibitem{c_sso} 
+Wikipedia, La enciclopedia libre.
+``Single sign-on''.
+(\href{https://en.wikipedia.org/wiki/Single_sign-on}{Link}, 2023).
+
+\bibitem{c_dondominio} 
+Soluciones Corporativas IP, SL.
+``Don Dominio Servicios de correo.''.
+(\href{https://www.dondominio.com/es/products/email/}{Link}, 2023).
+
+\bibitem{c_mail_selfhosted} 
+awesome-selfhosted
+``Mail selft hosted service collection tools.''.
+(\href{https://github.com/awesome-selfhosted/awesome-selfhosted##communication---email---complete-solutions}{Link}, 2023).
+
+\bibitem{c_docker_mail} 
+ Docker Mailserver Organization
+``Docker Mailserver Documentation.''.
+(\href{https://docker-mailserver.github.io/docker-mailserver/edge/}{Link}, 2023).
+
+\bibitem{c_slack} 
+Slack Technologies, LLC, una empresa de Salesforce
+``Slack plataforma de comunicacion.''.
+(\href{https://slack.com/intl/es-es}{Link}, 2023).
+
+\bibitem{c_teams} 
+Microsoft
+``Teams Microsoft plataform.''.
+(\href{hhttps://www.microsoft.com/es/microsoft-teams/group-chat-software/}{Link}, 2023).
+
+\bibitem{c_telegram} 
+Telegram company.
+``Telegram web page.''.
+(\href{https://telegram.org/}{Link}, 2023).
+
+\bibitem{c_franz} 
+Franz company \& community.
+``One service unlimited accounts''.
+(\href{https://meetfranz.com/}{Link}, 2023).
+
+\bibitem{c_ferdi} 
+Ferdi community.
+``Opensource fork of Franz.''.
+(\href{https://opencollective.com/getferdi}{Link}, 2023).
+
+\bibitem{c_station} 
+Station community.
+``One app to rule them all.''.
+(\href{https://getstation.com/}{Link}, 2023).
+
+\bibitem{c_intranet} 
+Telefonica Ecuador.
+``Intranet ventajas''.
+(\href{https://empresas.blogthinkbig.com/intranet-una-manera-efectiva-de-encarar-la-comunicacion-interna}{Link}, 2023).
+
+\bibitem{c_asterisk} 
+ Sangoma Technologies.
+``Asterisk powers IP PBX systems, VoIP gateways, conference servers and other custom solutions''.
+(\href{https://www.asterisk.org/}{Link}, 2023).
+
+\bibitem{c_samba} 
+Samba Team Members
+``Since 1992, Samba has provided secure, stable and fast file and print services for all clients using the SMB/CIFS protocol, such as all versions of DOS and Windows, OS/2, Linux and many others.''.
+(\href{https://www.samba.org/}{Link}, 2023).
+
+\bibitem{c_dropbox} 
+Dropbox Company.
+``Dropbox mantén todo al alcance de tu mano.''.
+(\href{https://www.dropbox.com/}{Link}, 2023).
+
+\bibitem{c_drive} 
+Google LLC
+``Google Drive es un servicio de alojamiento y sincronización de archivos desarrollado por Google.''.
+(\href{https://drive.google.com/}{Link}, 2023).
+
+\bibitem{c_mega} 
+MEga The Privacy Company.
+``Almacena archivos, chatea y reúnete, todo en un solo lugar.''.
+(\href{https://mega.io/}{Link}, 2023).
+
+\bibitem{c_seafile} 
+Seafile community team.
+``Your Data Safety is our First Priority.''.
+(\href{www.seafile.com}{Link}, 2023).
+
+\bibitem{c_owncloud} 
+ ownCloud GmbH.
+``ownCloud, your file platform.''.
+(\href{https://owncloud.com/}{Link}, 2023).
+
+\bibitem{c_nextcloud} 
+Nextcloud GmbH.
+`` Files, Talk, Groupware y Office en una única plataforma, optimizando el flujo de colaboración. ''.
+(\href{https://nextcloud.com/es/}{Link}, 2023).
+
+\bibitem{c_colabora} 
+Collabora Ltd
+``Collabora Online es un paquete de oficina en línea de código abierto desarrollado por Collabora Productivity, una división de Collabora.''.
+(\href{https://www.collaboraoffice.com/collabora-online/}{Link}, 2023).
+
+\bibitem{c_media_wiki} 
+MediaWiki community \& Docker Community
+``MediaWiki is free and open-source wiki software.''.
+(\href{https://hub.docker.com/_/mediawiki}{Link}, 2023).
+
+\bibitem{c_bookstack} 
+BookStack registered trade mark of Daniel Brown.
+``BookStack is a simple, self-hosted, easy-to-use platform for organising and storing information. ''.
+(\href{https://www.bookstackapp.com/}{Link}, 2023).
+
+\bibitem{c_pinedocs} 
+Alexander, xy2z (user).
+``A fast and lightweight site for viewing files.''.
+(\href{https://github.com/xy2z/PineDocs}{Link}, 2023).
+
+\bibitem{c_gitea_comparation} 
+Gitea Community docs.
+``Gitea General Features and Comparation''.
+(\href{https://docs.gitea.com/next/installation/comparison##general-features}{Link}, 2023).
+
+\bibitem{c_git} 
+Git web page.
+``Git control de versiones distribuido.''.
+(\href{https://git-scm.com/}{Link}, 2023).
+
+\bibitem{c_gitlab} 
+Gitlab Inc. 
+``Un servicio web de forja, control de versiones y DevOps basado en Git.''.
+(\href{https://about.gitlab.com/}{Link}, 2023).
+
+\bibitem{c_github} 
+Microsft. 
+``GitHub is where over 100 million developers shape the future of software, together. .''.
+(\href{https://github.com/}{Link}, 2023).
+
+\bibitem{c_bitbucket} 
+Atlassian
+``Bitbucket es un servicio de alojamiento basado en web, para los proyectos que utilizan el sistema de control de versiones Mercurial y Git''.
+(\href{https://bitbucket.org/}{Link}, 2023).
+
+\bibitem{c_gogs} 
+The Gogs project 
+``Gogs is a painless self-hosted Git service.'.
+(\href{https://gogs.io/}{Link}, 2023).
+
+\bibitem{c_gitea} 
+Gitea Ltd.
+``Gitea es un paquete de software de código abierto para alojar el control de versiones de desarrollo de software utilizando Gi.'.
+(\href{https://about.gitea.com/}{Link}, 2023).
+
+\bibitem{c_jenkins} 
+Jenkins Project.
+`Jenkins es un servidor de automatización open source escrito en Java.'.
+(\href{https://www.jenkins.io/}{Link}, 2023).
+
+\bibitem{c_drone} 
+Harness Inc. 
+`Drone is a self-service Continuous Integration platform for busy development teams.'.
+(\href{https://www.drone.io/}{Link}, 2023).
+
+\bibitem{c_porcentaje_wordpress} 
+Wnpower New y blog. 
+`Market share y estadísticas de WordPress actuales'.
+(\href{https://www.wnpower.com/blog/marketshare-estadisticas-wordpress/}{Link}, Noviembre 2022).
+
+\bibitem{c_wordpress} 
+Wordpress company.
+`Build and grow your website with the best way to WordPress.'.
+(\href{https://wordpress.com/}{Link}, 2023).
+
+\bibitem{c_prestashop} 
+PrestaShop company.
+`Vende online en una plataforma e‑commerce totalmente personalizable que se adapta al crecimiento de tu negocio.'.
+(\href{https://prestashop.es/}{Link}, 2023).
+
+\bibitem{c_bees} 
+BEES global company.
+`BEES está transformando el modelo tradicional de ventas, ubicando a los clientes en el centro de todo, haciendo sus vidas más simples y sus negocios más rentables.'.
+(\href{https://www.bees.com/es}{Link}, 2023).
+
+\bibitem{c_hugo} 
+Hugo open source project.
+`Hugo is one of the most popular open-source static site generators.'.
+(\href{https://gohugo.io/}{Link}, 2023).
+
+\bibitem{c_keeweb} 
+Keepass project.
+`KeeWeb is a webclient for Keepass software.'.
+(\href{keeweb.info}{Link}, 2023).
+
+\bibitem{c_repository_comparative} 
+Disbug, Aswin Kumar KP.
+`Github vs Gitlab vs Bitbucket.'.
+(\href{https://disbug.io/en/blog/github-vs-gitlab-vs-bitbucket}{Link}, 2023).
+
+\bibitem{c_rocket_chat} 
+Rocket.Chat company.
+`Deja que la conversación fluya.'.
+(\href{https://es.rocket.chat/}{Link}, 2023).
+
+\bibitem{c_tinode} 
+Tinode LLC.
+`Instant messaging server.'.
+(\href{https://github.com/tinode/chat}{Link}, 2023).
+
+\bibitem{c_zulip} 
+Tinode LLC.
+`Organized team chat, the calmer, more efficient way to work'.
+(\href{https://zulip.com/}{Link}, 2023).
+
+\bibitem{c_element} 
+New Vector Ltd.
+`A secure communications platform built around you.'.
+(\href{https://element.io/}{Link}, 2023).
+
+\bibitem{c_wire} 
+Wire Swiss GmbH
+`Protect the information that you have been entrusted with.'.
+(\href{https://wire.com/en/}{Link}, 2023).
+
+\bibitem{c_mattermost} 
+Mattermost, Inc
+`Accelerating mission critical work in complex operational environments.'.
+(\href{https://mattermost.com/}{Link}, 2023).
+
+\bibitem{c_mailu} 
+Mailu authors comunity.
+`Mailu is a simple yet full-featured mail server as a set of Docker images.'.
+(\href{https://mailu.io/2.0/}{Link}, 2023).
+
+\bibitem{c_ldap} 
+IETF RFC 4510, RFC 4511.
+`The Lightweight Directory Access Protocol.'.
+(\href{https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol}{Link}, \href{https://datatracker.ietf.org/doc/html/rfc4511}{Link RFC}, 2023 ).
+
+\bibitem{c_keycloak} 
+Red Hat projects community.
+`Keycloak is an open source identity and access management solution.'.
+(\href{https://www.keycloak.org/}{Link}, 2023).
+
+\bibitem{c_openvpn} 
+OpenVPN, Inc..
+`OpenVPN provides VPN server solutions for small to mid-size businesses.'.
+(\href{https://openvpn.net/}{Link}, 2023).
+
+\bibitem{c_wireguard} 
+Jason A. Donenfeld. The zx2c4 project.
+`WireGuard securely encapsulates IP packets over UDP. .'.
+(\href{https://www.wireguard.com/}{Link}, 2023).
+
+\bibitem{c_ipsec} 
+IETF RFC 6071
+`IPsec es un conjunto de protocolos cuya función es asegurar las comunicaciones sobre el Protocolo de Internet autenticando y/o cifrando cada paquete IP en un flujo de datos.'.
+(\href{https://en.wikipedia.org/wiki/IPsec}{Link},\href{https://datatracker.ietf.org/doc/html/rfc6071}{Link RFC}, 2023 ).
+
+\bibitem{c_pritunl} 
+Pritunl, Inc
+`Enterprise Distributed OpenVPN, IPsec and WireGuard Server.'.
+(\href{https://pritunl.com/}{Link}, 2023).
+
+\bibitem{c_netmaker} 
+NetMaker Inc
+`Unify your devices with an ultra-powerful overlay network.'.
+(\href{https://www.netmaker.io/}{Link}, 2023).
+
+\bibitem{c_taiga} 
+Taiga Inc
+`A featured-rich software that offers a very simple start through its intuitive user interface.'.
+(\href{https://taiga.io/}{Link}, 2023 ).
+
+\bibitem{c_planka} 
+Planka, opensource team.
+`Free open source kanban board for workgroups.'.
+(\href{https://planka.app/}{Link}, 2023).
+
+\bibitem{c_passbolt} 
+Passbolt S.A.
+`The open source password manager for teams.'.
+(\href{https://www.passbolt.com/}{Link}, 2023).
+
+\bibitem{c_portainer} 
+Portainer company.
+`Portainer is the most versatile container management platform that simplifies your secure adoption of containers with remarkable speed.'.
+(\href{https://www.portainer.io/contact-us}{Link}, 2023).
+
+\bibitem{c_wireguar_ui} 
+Khanh Ngo, ngoduykhanh(user).
+`A web user interface to manage your WireGuard setup.'.
+(\href{https://github.com/ngoduykhanh/wireguard-ui}{Link}, 2023).
+
+\bibitem{c_wg_easy} 
+Wg-easy community.
+`The easiest way to run WireGuard VPN + Web-based Admin UI.'.
+(\href{https://github.com/wg-easy/wg-easy}{Link}, 2023).
+
+\bibitem{c_adguard} 
+Portainer company.
+`AdGuard es la mejor manera de deshacerse de los anuncios molestos, rastreadores en línea y proteger tu computadora del malware.'.
+(\href{https://adguard.com/es/welcome.html}{Link}, 2023).
+
+\bibitem{c_mageddo} 
+Elvis Souza, mageddo (user).
+`Solve your DNS hosts from your docker containers, then from your local configuration, then from internet.'.
+(\href{https://github.com/mageddo/dns-proxy-server}{Link}, 2023).
+
+\bibitem{c_dns_proxy_carlsverre} 
+Carl Sverre, carlsverre (user).
+`Created to solve a single problem well. Run this container in a docker-compose v2 file and it will proxy dns requests to the docker daemon's embedded dns server. Technically this will work for any docker user network, but its designed to be used with docker-compose.'.
+(\href{https://github.com/carlsverre/damn-simple-dns-proxy}{Link}, 2023).
+
+\bibitem{c_autorisc} 
+Nicco, cupcakearmy (user).
+`Autorestic is a wrapper around the amazing restic.'.
+(\href{https://autorestic.vercel.app/}{Link}, 2023).
+
+\bibitem{c_duplicati} 
+Cuplicati community.
+`Free backup software to store encrypted backups online.'.
+(\href{https://www.duplicati.com/}{Link}, 2023).
+
+\bibitem{c_onlyoffice} 
+Ascensio System SIA .
+`Run your private office with the ONLYOFFICE'.
+(\href{https://www.onlyoffice.com/}{Link}, 2023).
+
+\bibitem{c_rsync} 
+Linux command.
+`Rsync is a fast and extraordinarily versatile file copying tool.'.
+(\href{https://linux.die.net/man/1/rsync}{Link}, 2023).
+
+\bibitem{c_openldap_keycloak} 
+Ivan Franchin.
+`Proof-of-Concept springboot-react-keycloak with openldap.'.
+(\href{https://github.com/ivangfr/springboot-keycloak-openldap}{Link}, 2023).
+
+\bibitem{c_php_ldap_admin}
+Deon George.
+`Web based LDAP administration tool.'.
+(\href{https://github.com/leenooks/phpLDAPadmin}{Link}, 2023).
+
+\bibitem{c_systemd}
+Freedesktop Organization.
+`systemd System and Service Manager'.
+(\href{https://www.freedesktop.org/wiki/Software/systemd/}{Link}, 2023).
+
+\bibitem{c_journald}
+Command from systemD.
+`The journalctl command is part of the systemd suite of utilities and is used to query and display log messages from the systemd journal'.
+(\href{https://www.geeksforgeeks.org/journalctl-command-in-linux-with-examples/}{Link}, 2023).
+
+\bibitem{c_funcionamiento_docker} 
+Eduardo Zepeda.
+``Coffee bytes Blog: Artículos sobre desarrollo web y Linux.''.
+(\href{https://coffeebytes.dev/container-de-docker-con-namespaces-y-cgroups/}{Link}, 2023).
+
+\bibitem{c_docker_compose_systemD} 
+ Rubén Aguilera Díaz-Heredero {\it Adictos al trabajo, autentia.}
+``Ejecutar cualquier docker-compose como servicio.''.
+(\href{https://www.adictosaltrabajo.com/2018/04/03/ejecutar-cualquier-docker-compose-como-servicio/}{Link}, 2018).
+
+\bibitem{c_docker_compose_multiples} 
+ Mehdi Hosseini,{\it Medium blog.}
+``How to Link Multiple Docker Compose Files.''.
+(\href{https://medium.com/@mehdi_hosseini/how-to-link-multiple-docker-compose-files-7250f10063a9}{Link}, 2022).
+
+\bibitem{c_docker_compose_override} 
+Philipp Scheit,{\it Medium blog.}
+``docker-compose advanced configuration.''.
+(\href{https://pscheit.medium.com/docker-compose-advanced-configuration-541356d121de}{Link}, 2018).
+
+\bibitem{c_boe_rpgd} 
+ Jefatura del Estado del Reino de España
+``Ley 2/2023, de 20 de febrero, reguladora de la protección de las personas que informen sobre infracciones normativas y de lucha contra la corrupción.''. {\it BOE núm. 44, de 21 de Febrero de 2023}.
+(\href{https://www.boe.es/eli/es/l/2023/02/20/2/con}{Link} BOE-A-2023-4513).
+
+\bibitem{c_ue_rpgd} 
+ Comisión Europea.
+``El Reglamento general de protección de datos (RGPD), la Directiva sobre protección de datos en el ámbito penal y otras normas relativas a la protección de datos personales.''. {\it La proteccion de datos de la UE RGPD}.
+(\href{https://commission.europa.eu/law/law-topic/data-protection/data-protection-eu_es}{Link} BOE-A-2023-4513).
+
+\bibitem{c_aedp} 
+Agencia Española de protección de datos.
+``Derechos, Deberes y área de actuación.''. 
+(\href{https://www.aepd.es/}{Link} 2023).
+
+\bibitem{c_pi_hole} 
+Pi-hole, LLC.
+``Pi-hole es una aplicación para bloqueo de anuncios y rastreadores en Internet.''. 
+(\href{https://pi-hole.net/}{Link} 2023).
+
+\bibitem{c_procustodibus} 
+Arcem Tene INC, Seattle, USA
+``Pro Custodibus makes WireGuard networks easy to manage.''. 
+(\href{https://www.procustodibus.com/}{Link} 2023).
+
+\bibitem{c_tomahost} 
+E-Internet 
+``Productos VPS, hosting, y shelf host de terceros productos(wordpress, phrestashop, wiki, nextcloud, vpn ...).''. 
+(\href{https://tomahost.com/}{Link} 2023).
+
+\bibitem{c_syncloud} 
+E-Internet 
+``Syncloud device runs your apps at your premises.''. 
+(\href{https://syncloud.org/}{Link} 2023).
+
+\bibitem{c_osi} 
+ISO/IEC 7498.
+`The Open Systems Interconnection model.'.
+(\href{https://en.wikipedia.org/wiki/OSI_model}{Link}, \href{https://www.iso.org/standard/20269.html}{Link ISO/IEC 7498-1}, 2023).
+
+\bibitem{c_https} 
+WWW protocol
+`Hypertext Transfer Protocol Secure.'.
+(\href{https://en.wikipedia.org/wiki/HTTPS}{Link} 2023).
+
+\bibitem{c_letsencrypt} 
+Internet Security Research Group
+`Let’s Encrypt es una Autoridad de Certificación gratuita, automatizada, y abierta.'.
+(\href{https://letsencrypt.org/es/}{Link} 2023).
+
+\bibitem{c_traefik} 
+Traefik Labs
+`The world’s most popular cloud-native application proxy that helps developers and operations teams build, deploy and run modern microservices applications quickly and easily.'.
+(\href{https://traefik.io/}{Link} 2023).
+
+
+\bibitem{c_ngix} 
+F5, Inc
+`The open source web server that powers more than 400 million websites.'.
+(\href{https://www.nginx.com/}{Link} 2023).
+
+\bibitem{c_ci_docker} 
+Docker Documentation
+`Continuous integration with Docker.'.
+(\href{https://docs.docker.com/build/ci/}{Link} 2023).
+
+\bibitem{c_docker_multistage} 
+Docker Documentation
+`Multi-stage builds.'.
+(\href{https://docs.docker.com/build/building/multi-stage/}{Link} 2023).
+
+\bibitem{c_docker_compose_v2} 
+Docker Documentation
+`Compose file version 2 references.'.
+(\href{https://docs.docker.com/compose/compose-file/compose-file-v2/}{Link} 2023).
+
+\bibitem{c_docker_compose_v3} 
+Docker Documentation
+`Compose file version 2 references.'.
+(\href{https://docs.docker.com/compose/compose-file/compose-file-v3/}{Link} 2023).
+
+\bibitem{c_docker_compose_include} 
+Docker Documentation
+`Compose include.'.
+(\href{https://docs.docker.com/compose/multiple-compose-files/include/}{Link} 2023).
+
+\bibitem{c_docker_compose_merge} 
+Docker Documentation
+`Compose Merge.'.
+(\href{https://docs.docker.com/compose/multiple-compose-files/merge/}{Link} 2023).
+
+\bibitem{c_mars_server} 
+Borja Paz Rodríguez
+`Managed home server with Docker, Docker Compose, Make and Bash'.
+(\href{https://github.com/borjapazr/mars-server}{Link} 2023).
+
+\bibitem{c_we_transfer} 
+WeTransfer
+`WeTransfer is the simplest way to send your files around the world'.
+(\href{https://wetransfer.com/}{Link} 2023).
+
+\bibitem{c_dd_wrt} 
+EmbeDD GmbH
+`DD-WRT is a Linux based alternative OpenSource firmware suitable for a great variety of WLAN routers and embedded systems. '.
+(\href{https://dd-wrt.com/}{Link} 2023).
+
+\bibitem{c_agile} 
+Wikipedia, La enciclopedia libre.
+`Agile software development. '.
+(\href{https://en.wikipedia.org/wiki/Agile_software_development}{Link} 2023).
+
+\bibitem{c_scrum} 
+Wikipedia, La enciclopedia libre.
+`Scrum is an agile project management system commonly used in software development and other industries. '.
+(\href{https://en.wikipedia.org/wiki/Scrum_(software_development)}{Link} 2023).
+
+\bibitem{c_sonar} 
+Wikipedia, La enciclopedia libre.
+`SonarQube es una plataforma para evaluar código fuente. '.
+(\href{https://en.wikipedia.org/wiki/SonarQube}{Link} 2023).
+
+\bibitem{c_blackduck} 
+Synopsys
+`Black Duck software composition analysis (SCA) helps teams manage the security, quality, and license compliance risks that come from the use of open source and third-party code in applications and containers '.
+(\href{https://www.synopsys.com/software-integrity/security-testing/software-composition-analysis.html}{Link} 2023).
+
+\bibitem{c_git} 
+Software Freedom Conservancy.
+`BGit is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.'.
+(\href{https://git-scm.com/}{Link} 2023).
+
+\bibitem{c_dot} 
+Joel Glovier.
+`Your unofficial guide to dotfiles on GitHub.'.
+(\href{https://dotfiles.github.io/}{Link} 2023).
+
+\bibitem{c_dot_tools} 
+Lars Kappert.
+`A curated list of dotfiles resources. Inspired by the awesome list thing.'.
+(\href{https://github.com/webpro/awesome-dotfiles}{Link} 2023).
+
+\bibitem{c_dot_repository} 
+CodelyTV.
+`Repository containing all the automation required to setup your MacOS in just a few seconds after a fresh install.'.
+(\href{https://github.com/CodelyTV/dotfiles}{Link} 2023).
+
+\bibitem{c_onlyoffice} 
+Ascensio System SIA.
+`Dirige tu oficina privada con ONLYOFFICE una suite ofimática en línea segura y compatible con los formatos de MS Office.'.
+(\href{https://www.onlyoffice.com/es/}{Link} 2023).
+
+\bibitem{i_ansible_1} 
+Steve Strutt, IBM Cloud Schematics Service.
+`Image Source Ansible diagram.'.
+(\href{https://www.ibm.com/blog/end-to-end-application-provisioning-with-ansible-and-terraform/}{Link} Septiembre 2023).
+
+\bibitem{i_ansible_2} 
+Omar Aqlan.
+`Image Source Ansible diagram.'.
+(\href{https://omaralhakimy.wordpress.com/2018/11/08/ansible-with-example/}{Link} Septiembre 2023).
+
+\bibitem{i_containers} 
+Karthikeyan Shanmugam
+`Image Source Docker vs Virtual Machine.'.
+(\href{https://cloudnativenow.com/topics/cloudnativedevelopment/what-are-containers-and-why-do-we-need-them/}{Link} Septiembre 2023).
+
+\bibitem{i_orquestadores} 
+Atharv Yeole.
+`Image Source Docker-compose, swarm y kubernetes.'.
+(\href{https://atharvyeole.medium.com/best-analogy-to-understand-docker-docker-compose-docker-swarm-and-kubernetes-69cd980a6e6a}{Link} Septiembre 2023).
+
+\bibitem{i_redes_sedes} 
+Wikipedia, La enciclopedia libre.
+`Image Source Redes interconexion de sedes.'.
+(\href{https://upload.wikimedia.org/wikipedia/commons/0/00/Virtual_Private_Network_overview.svg}{Link} Septiembre 2023).
+
+\bibitem{i_dns} 
+defreitas/dns-proxy-server.
+`Image Source Redes interconexión de sedes.'.
+(\href{https://hub.docker.com/r/defreitas/dns-proxy-server}{Link} Septiembre 2023).
+
+\bibitem{i_scrum} 
+PM Partners
+`Image Source Scrum.'.
+(\href{https://www.pm-partners.com.au/the-agile-journey-a-scrum-overview/}{Link} Septiembre 2023).
+
+\bibitem{i_git_flow} 
+Atlassian
+`Image Source Git flow.'.
+(\href{https://www.atlassian.com/es/git/tutorials/comparing-workflows/gitflow-workflow}{Link} Septiembre 2023).
+
+\bibitem{i_coworking} 
+Redacción emprendedores
+`Image Source Coworking.'.
+(\href{https://emprendedores.es/gestion/oficina-caliente-teletrabajo/}{Link} Septiembre 2023).
+
+\bibitem{i_family} 
+Isabel Tolosa L.
+`Image Source Teletrabajo.'.
+(\href{https://www.basepublica.cl/category/cultura-y-sociedad/}{Link} Septiembre 2023).
+
+\bibitem{i_pantallas} 
+Intel.
+`Image Source pantallas formas y dimensiones.'.
+(\href{https://www.intel.la/content/www/xl/es/gaming/resources/everything-you-need-to-know-about-gaming-monitors.html}{Link} Septiembre 2023).
+
+\bibitem{i_vps} 
+M. Ali, hostnoc.
+`Image Source servidores tipos.'.
+(\href{https://hostnoc.com/what-is-vps-hosting/}{Link} Septiembre 2023).
+
+\bibitem{i_sso} 
+Security Lit Limited.
+`Image Source SSO.'.
+(\href{https://infosecwriteups.com/sso-a-secure-way-for-authentication-and-authorization-6a4fb8794dd6}{Link} Septiembre 2023).
+
+\bibitem{i_dind_dood}
+Dhirendra Patil.
+`Image Source Docker in Docker and Docker out of Docker.'.
+(\href{https://dhirendra777.medium.com/run-docker-inside-docker-f4bce0019095}{Link} Septiembre 2023).
+
+\bibitem{i_dns}
+Abu Sayeed.
+`Image Source DNS.'.
+(\href{https://systemzone.net/mikrotik-dns-client-and-caching-dns-server-configuration/}{Link} Septiembre 2023).
+
+\bibitem{i_ngix_proxy}
+Steeve, dev.to .
+`Image Source Ngix proxy.'.
+(\href{https://dev.to/steeve/manage-a-multiple-websites-server-with-docker-compose-nginx-and-auto-ssl-certificates-298}{Link} Septiembre 2023).
+
+\bibitem{i_cables}
+Made-in-china Image products.
+`Image Source UTP cables.'.
+(\href{https://es.made-in-china.com/co_hzspring/product_U-FTP-Cat-6A-Bc-PVC-Cm-Twisted-Pair-Installation-Cable_oyiurshog.html}{Link} Septiembre 2023).
+
+\bibitem{c_code} 
+ Rodrigo sampedro Casis github project
+``TFG documentation and code.''.
+(\href{https://github.com/rodrigo-sampedro/tfg_rodrigo_sc/}{Link}, 2023).
+
+\end{thebibliography}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%                           APENDIXS                         %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{empty}  % no tocar
+
+%% Descomentar una de les dues línies següents, en funció de:
+%%  a) els apendixs s'encuadernaran apart (amb portada) 
+%%  b) els apendixs s'enquadernen amb el mateix projecte (sense portada). 
+%% Recordeu que si tot el document (amb apèndixs) excedeix les 100 pagines 
+%% s'ha d'enquadernar a part
+\appendix\ambportada
+%\appendix\senseportada
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% INCLOURE A PARTIR D'AQUI TOTS ELS CAPÍTOLS DELS APENDIXS   %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{appendix/anexo_A}
+\input{appendix/anexo_B}
+\input{appendix/anexo_C}
+\input{appendix/anexo_D}
+\input{appendix/anexo_E}
+\input{appendix/anexo_F}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% i  aixo es tot! ;)
+\end{document}
+
+
+
+
+
+

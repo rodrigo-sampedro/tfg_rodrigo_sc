@@ -1,0 +1,38 @@
+\cleardoublepage
+\phantomsection
+\chapter{Conclusiones}
+En la entrega de este documento (Octubre de 2023), se puede afirmar que la gran mayoría de los objetivos iniciales de este trabajo se han conseguido.
+
+En primer lugar se ha planificado y ejecutado la creación de un lugar de teletrabajo adecuado para el autor, un trabajo continuo no exento de errores y mejoras realizadas durante el verano. Destacando especialmente en las comparativas con otros setup anteriores (anexo \ref{S:circunstancias}) y las soluciones aplicadas convergentes  con otros autores en temáticas similares \cite{c_overemployed}.
+
+Segundo, se ha obtenido una nube virtual, económica, escalable fácilmente transferible que facilita y permite el teletrabajo. Especialmente aplicada a Elenkar S.L en el caso de mi pareja, pero de gran utilidad para proyectos personales o 'caseros'.
+
+Por ultimo durante la investigación y recopilación se han comparado gran cantidad de servicios, tecnologías y proyectos basados en comunidades (véase tabla \ref{T:servicios_dockerizados} así como pruebas de concepto \ref{S:pruebas_concepto}), permitiendo seleccionar aquellos elementos mas útiles, ágiles y simples, que permiten ofrecer un producto customizable basado en un conglomerado de servicios gratuitos, LTS soportado por comunidades. 
+
+Desde el punto de vista técnico la conjunción de servicios gestionado por docker, docker-compose y ansible, ha permitido un ágil despliegue, backup y restauración, minimizando el mantenimiento (véase \ref{lst:systemD_docker_reload}) o el conocimiento necesario para utilizarlo, mientras requiere de un perfil bajo de recursos de gran utilidad en pequeñas y medianas empresas.
+
+En definitiva un boceto de producto comercial al por menor, que ya es explotado minoritaria-mente como pack de servicios similares externalizados\cite{c_tomahost}, productos especializados en casuísticas especificas como VPN\cite{c_procustodibus}, comunicación, web, almacenamientos(proveídos mismamente por VPS ovh\cite{c_vps_ovh}) o en autocracia (basada en raspberry pi) son por ejemplo Syncloud\cite{c_syncloud}.
+
+En conclusión, este trabajo no solo muestra el conocimiento o un resumen del estado actual entorno al teletrabajo y las herramientas necesarias para implementarlo. Sino que existe un verdadero mercado segmentado en la puesta en marcha de los servicios o la gestión directa de ellos. En ambos casos son pequeñas y mediana empresas, sin recursos donde normalmente uno de sus proveedores de red / material / hosting / vps / proveedore de software (web) han aceptado un rol de montaje, gestión y mantenimiento como una segunda fuente de ingresos pero especialmente como servicio \textbf{diferenciador} y complementario a sus clientes.
+
+\section{Conclusiones de la aplicación en Elenkar}
+Elenkar S.L es una pequeña empresa de 3-4 trabajadores enfocada en servicios inmobiliarios y servicios exclusivos relacionados, afincada en el baix penedes.
+
+Sus principales necesidades son Web (captación de clientes), mail (método de comunicación vía internet), capacidad de almacenaje y compartición de documentos (dropbox / drive) con otras inmobiliarias/clientes.
+
+Tras la aplicación de este documento se ha conseguido:
+\begin{itemize}
+    \item Planificación real, y mejora de los recursos hardware, como software externalizados bajo el mismo presupuesto.
+    \item Segurización y robusted real, tanto de red interna, interacción con clientes y vulnerabilidades de la gestión humana.
+    \item Despliegue de recursos autócratas o confederales, a un coste low cost, que permiten reducir un presupuesto de 250€/anuales para un único servicio (dropbox), en un coste real de 60€/año por múltiples servicios incluyendo el almacenamiento en la nube.
+    \item Acceso a servicios que han permitido la realización de trabajo en remoto parcial, VPN, acceso remoto, gestión centralizada de contraseñas seguras, control remoto de PC y compartición de recursos en remoto como impresoras, escáneres y servicios en red.
+    \item El acceso a servicios no requeridos pero que mejoran el día a día como interacción de sensores y actuadores, gestión de alarmas o seguridad.
+\end{itemize}
+
+\section{Conclusiones Personales}
+Desde el punto de vista personal puedo concluir que me ha permitido centralizar la casa de mis padres, casa de mi suegra, mi casa, otros inmuebles de una manera equivalente a las diversas sedes de una empresa. Y por similitud un soporte más directo y automatizado al no depender de terceras herramientas o de acciones humanas para configurar, arreglar elementos digitales.
+
+Por otra parte como ayuda personal a proyecto de amigos/ex-compañeros, creo que les ha permitido reducir sus gastos iniciales así como reducir sus dependencias de softwares específicos, siendo una curva de aprendizaje más ligera para personas no técnicas, cuando se intenta realizar un proyecto personal de negocio.
+
+\section{Trabajo futuro}
+Aunque se ha obtenido el trabajo deseado y se han probado diversos conceptos de gran interés, se han detectado trabajos o conglomerados similares a este trabajo, especialmente focalizados en rasberry pi o en self hosting de servicios. Sin embargo todos ellos existen bajo un pretexto especializado o un conglomerado de servicios en pack, creo que lo que aun no existe en ningún producto privativo o opensource es el seleccionando de los casos de interés que autogenera la versión de docker-compose interesada o el despliegue directo de dicha versión sobre un VPS. Por lo tanto con posterioridad a este TFG, continuare con el provecto en vías personales para la extensión y automatización del mismo incluyendo una UI que lo haga aun mas asequible sin conocimiento técnico.

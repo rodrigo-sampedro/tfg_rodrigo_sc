@@ -1,0 +1,17 @@
+title Restore Dockerized Service diagram flow
+
+participant Admin as adm
+participant VPS Server as VPS
+participant ExternalServer as ES
+
+adm->+ES: Trigger specific backup to be restored
+note right of ES: Use duplicaty or autorestic to get backup.
+ES->-ES:
+ES->VPS: Stop all dockerized services (configured to backup).
+ES->+VPS: Start Re-syncr command from restured backup with volumes folders.
+note right of VPS: Synchronize backup volumes
+VPS->-ES:
+ES->ES: Clean temporal Restored backup 
+ES->VPS: Start all dockerized services.
+note right of VPS: End restore process
+ES->-adm:

@@ -1,0 +1,47 @@
+\chapter{Proyectos de aplicación}\label{S:anexo_F}
+Este anexo explica los usos o aplicaciones reales de este documento.
+
+Aunque existe una implementación real del Capitulo \ref{S:tema_1}, la realidad es que mi casuística personal de teletrabajo, toda la parte virtual o software no es auto-gestionada, sino que sigue los estándares directrices y decisiones de la empresa en la que trabajo.
+
+En conclusión en mi realidad diaria, no es aplicable. Sin embargo existen otras realidades en las que si se ha implementado los temas \ref{S:tema_2} y \ref{S:tema_3} como parte de la flexibilización o trabajo remoto parcial para mi pareja, donde si tengo margen de maniobra para decidir y aplicar este documento.
+
+Finalmente en casos como el inicio de un negocio (autónomo o startup) requiere de unos patrones o automatizaciones muy similares, por lo tanto he colaborado y ayudado a varios amigos o ex-compañeros de trabajo en una aplicación customizada de 'la nube virtual' para beneficio en sus proyectos personales, así como queda claro que lo utilizo parcialmente en mis proyectos amateur, o del ámbito casero-familiar.
+
+\section{Elenkar}
+Elenkar S.L es una pequeña empresa de 3-4 trabajadores enfocada en servicios inmobiliarios y servicios exclusivos relacionados, afincada en el baix penedes.
+
+Sus principales necesidades eran Web (captación de clientes), mail (método de comunicación vía internet), capacidad de almacenaje y compartición de documentos (dropbox / drive) con otras inmobiliarias y un acceso externo remoto cuando no se esta en la oficina.
+
+El servicio web son externalizados actualmente especialmente por la intermodalidad de portales por ciertos CRM específicos para inmobiliarias y aunque en el periodo 2013-2017 este autor genero un software Java completo para la gestión de la empresa, quedo totalmente desfasado tras el boom de portales inmobiliarios 2017-19 y su concentración posterior.
+
+El servicio mail externalizado en este caso no solo por un tema de 'availability' sino por términos legales y espacio, para almacenar y guardar los mails durante un tiempo estipulado, no es viable o excesivamente complejo auto gestionar el servicio de mail.
+
+El servicio de almacenamiento, compartido en muchos casos con otras empresas obliga a la contratación de dropbox bussines (200-250€ la año) ha sido sustituido por un servicio Nextcloud mas adecuado a las necesidades y con múltiples extensiones no plausibles en dropbox, por 48€ / año.
+La implementación de un servidor samba interno dentro de la LAN de la oficina principal también ha permitido el traspaso de ficheros de una manera ágil y eficaz, evitando la sobrecarga de nextcloud. Por otra parte la introducción de otras herramientas como weTransfer\cite{c_we_transfer} y \cite{c_franz} ha permitido un canal seguro de comunicación externa especialmente para información confidencial.
+
+Uno de los puntos mas interesantes ha sido la combinación de un servicio de VPN, cámaras ip, sensores y interruptores/enchufes inteligentes.
+La necesidad de permitir un trabajo flexible y remoto a la oficina requiere de una ágil conexión remota a los PC de la oficina, únicamente proveída por una VPN. Por otra parte la VPN facilito el uso en remoto de impresora y escáneres, así como el acceso al servidor samba. Destaca el uso de una banana pi, no solo como servidor autócrata, sino como elemento de 'wake on lan' para el arranque de los pc y el acceso en remoto directamente al pc de trabajo (véase \ref{S:wake_on_lan}).
+
+Finalmente se instalo un conjunto de ipcam, sensores y alarma que son accesibles desde la LAN-VPN permitiendo un acceso ágil sin necesidad de exponer dichas ipcam a aplicaciones oficiales made in china de escasa ciberseguridad o confianza. Integración y utilización de una rapberry pi con home assistan junto a ungateway zigbee, que permite monitorizar en paralelo sensores de alarma(magnéticos y de presencia), grabaciones cámaras IP, así como automatizaciones de luz, enchufes, calefactores o aire acondicionado.
+
+Desgraciadamente debido a cuestiones de seguridad así como privacidad, Elenkar no ha permitido la publicación detallada o al pormenor tanto de los scripts, mapa de red o diagramas de interacción de sus elementos inteligentes.
+
+\section{Casos menores, emprendimiento}
+Principalmente proveer de un multi-hosting, vpn personal a un coste económico a amigos y conocidos, reduciendo sus gasto de emprendedores.
+
+Normalmente la contratación de un hosting para Wordpress, prestashop necesario para cualquier negocio, requiere de un coste 10-15€ / mes, dominio 6-15€/año, certificado SSL (6-15 €/año), mail (10-50€/año) y usualmente los honorarios de un profesional que nos realiza dichas tareas, normalmente customizando el wordpress, plugins etc... En resumen mantener una web de un pequeño negocio puede costar entorno a 150€/año y su montaje asumiendo casos sencillos de 300-800€ según el profesional y la calidad del trabajo desarrollado.
+
+Este proyecto no solo permite reducir los costes de 150€/año a un precio entorno 60€/año sino que permite una actualización continuada sin mantenimiento de terceros (al menos en periodos inferiores a un año), así como facilita la gestión y la introducción de los propietarios a docker-compose, con su ágil e intuitivo funcionamiento, para permitir desplegar elementos autonómicamente.
+
+Es de especial utilizad la facilidad de desplegar nuevos contenedores para web auxiliares o derivadas, que pueden auto gestionarse con certificados https, sin necesidad de ningún profesional.
+
+ Por ultimo remarco la usabilidad de la VPN, ya que aunque puede que solo sea útil para pymes o negocios digitalizados, elementos claves como seguridad, domótica, que permiten tener servicios propios que externamente son excesivamente caros de mantener o de instalar.
+
+ \section{Mi uso personal}
+ Mi mayor uso personal radica en la VPN y la accesibilidad a las diferentes LAN familiares así como para mis proyectos personales como monitorización de todo tipo de sensores.
+
+ Verdaderamente dispongo de múltiples ordenadores, mini pc, rasberry pi y banana pi diseminados entre diferentes domicilios y localizaciones, centralizar esta infraestructura gracias al VPS y la VPN así como disponer de un lugar públicos para desplegar mis proyectos, blog personal y mail es una infraestructura considerables raramente asumible a  tan ínfimo coste.
+
+ Multitud de proyectos de índole de sensores, smarthings y en especial de procesado de imagen basado en ipcams, son de extrema dificultad si se desea interconectar las fuentes, y micro servicios dockerizados que procesen dicha información, y ejecuten acciones sobre una infraestructura unificada.
+
+ 

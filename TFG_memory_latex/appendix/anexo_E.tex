@@ -1,0 +1,1162 @@
+\chapter{Pruebas de concepto y MVP}\label{S:anexo_E}
+
+En este anexo se citas las principales y mas útiles elementos de pruebas de concepto así como Mínimo Producto Viable MVP basico de cara a usar en proyecto o necesidades de una pequeña empresa.
+
+\section{Pruebas de Concepto}\label{S:pruebas_concepto}
+Las pruebas de conceptos, son docker-compose en donde se instancian los servicios auxiliares y servicios a probar. Aunque no requiere de las restricciones o interconexiones con otras redes usualmente se tiene a definir redes internas de docker si es necesario así como volúmenes en las mismas carpeta del docker-compose. Muchas de estas pruebas se basan en la versión oficial o ejemplos proveídos por su principal comunidad mantenedora.
+
+\subsection{Comunicación}
+Existen multitud de servicios de comunicación revisadas incluso probados durante la realización de este documento tabla \ref{T:servicios_dockerizados}. En muchos casos especialmente en los relacionados con email la configuración es bastante compleja o en muchos sistemas similares a slack usan demasiados recursos o subsistemas auxiliares. Uno de los sistemas mas aceptables de ser usado es rocket chat\cite{c_rocket_chat} con una base de datos auxiliar en este caso mongodb.
+
+\begin{lstlisting}[style=yaml, caption={docker-compose.yml Rocket Chat prueba de concepto.}, label={lst:rocket_chat} ]
+version: '3.3'
+services:  
+  rocketchat:
+    image: registry.rocket.chat/rocketchat/rocket.chat:6.1.0
+    restart: unless-stopped
+    volumes:
+      - rocketchat-uploads:/app/uploads
+    environment:
+      MONGO_URL: mongodb://mongodb:27017/rocketchat?replicaSet=rs0
+      MONGO_OPLOG_URL: mongodb://mongodb:27017/local?replicaSet=rs0
+      ROOT_URL: http://localhost:3000    # https://rocketchat.example.com
+      PORT: 3000
+      DEPLOY_METHOD: docker
+      Accounts_UseDNSDomainCheck: 'false'
+    depends_on:
+      - mongodb
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
+
+  mongodb:
+    image: bitnami/mongodb:4.4
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/bitnami/mongodb
+    environment:
+      MONGODB_REPLICA_SET_MODE: primary
+      MONGODB_REPLICA_SET_NAME: rs0
+      MONGODB_PORT_NUMBER: 27017
+      MONGODB_INITIAL_PRIMARY_HOST: mongodb
+      MONGODB_INITIAL_PRIMARY_PORT_NUMBER: 27017
+      MONGODB_ADVERTISED_HOSTNAME: mongodb
+      MONGODB_ENABLE_JOURNAL: 'true'
+      ALLOW_EMPTY_PASSWORD: 'yes'
+
+volumes:
+  mongodb_data:
+  rocketchat-uploads:    
+
+\end{lstlisting}
+
+\subsection{Ejemplo web}
+La herramienta mas fácil de generar una web dinámica así como gestionarla es utilizar un framework, especialmente si hablamos de un framework que debe ser gestionado por personas no técnicas sin tocar código. Wordpress es una excelente opción, es mayoritario, existen una gran cantidad de plugins y módulos prefabricados y guías extensas que permiten crear una web rápida y fácilmente.
+
+\begin{lstlisting}[style=yaml, caption={docker-compose.yml Wordpress prueba de concepto.}, label={lst:wordpress} ]
+version: "3.5"
+services:
+#
+# Wordpress blog page
+#
+  mariadb:
+    container_name: mariadb
+    image: docker.io/bitnami/mariadb:11.0
+    ports:
+      - '23306:3306'
+    volumes:
+      - './mariadb/:/bitnami/mariadb'
+    environment:
+      #ALLOW_EMPTY_PASSWORD: "yes"
+      MARIADB_USER: ${MARIADB_USER:-bn_wordpress}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-p4ssw0rd_wordpress}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-bitnami_wordpress}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASS:-root_pass}
+      
+  wordpress:
+    container_name: wordpress
+    image: docker.io/bitnami/wordpress:6
+    ports:
+      - '28080:8080'
+      - '28443:8443'
+    volumes:
+      - './wordpress/:/bitnami/wordpress'
+    depends_on:
+      - mariadb
+      - nginx
+    environment:
+      VIRTUAL_HOST: blog.programing.es
+      VIRTUAL_PORT: 8080
+      LETSENCRYPT_HOST: blog.programing.es
+      WORDPRESS_DATABASE_HOST: mariadb
+      WORDPRESS_DATABASE_PORT_NUMBER: 3306
+      WORDPRESS_DATABASE_NAME: ${MARIADB_DATABASE:-bitnami_wordpress}
+      WORDPRESS_DATABASE_USER: ${MARIADB_USER:-bn_wordpress}
+      WORDPRESS_DATABASE_PASSWORD: ${MARIADB_PASSWORD:-p4ssw0rd_wordpress}
+      WORDPRESS_USERNAME: ${WORDPRESS_USER:-ropnom}
+      WORDPRESS_PASSWORD: ${WORDPRESS_PASSWORD:-tfg}
+      WORDPRESS_EMAIL: ${WORDPRESS_EMAIL:-rodrigo.sc@programing.es}
+      WORDPRESS_FIRST_NAME: ${WORDPRESS_FIRST_NAME:-Rodrigo}
+      WORDPRESS_LAST_NAME: ${WORDPRESS_LAST_NAME:-Sampedro}
+      WORDPRESS_BLOG_NAME: ${WORDPRESS_BLOG_NAME:-"Programar Ingenieria"}
+      WORDPRESS_PLUGINS: ${WORDPRESS_PLUGINS}
+      WORDPRESS_SMTP_HOST: ${WORDPRESS_SMTP_HOST}
+      WORDPRESS_SMTP_PORT: ${WORDPRESS_SMTP_PORT}
+      WORDPRESS_SMTP_USER: ${WORDPRESS_SMTP_USER}
+      WORDPRESS_SMTP_PASSWORD: ${WORDPRESS_SMTP_PASSWORD}
+      WORDPRESS_ENABLE_REVERSE_PROXY: "yes"
+\end{lstlisting}
+
+\subsection{Ejemplo wiki}
+Para la evaluación del uso de wiki o documentación existen múltiples alternativas. Dependiendo de la casuística, documentación de software, pagina de documentación e información colectiva, foros de debate y reporte, existen múltiples herramientas aplicables. Con el fin de cubrir diversas casuísticas especialmente en nivel de recursos se han evaluado 3 opciones, bajos recursos para documentación PineDocs\cite{c_pinedocs}, intermedio en recursos y comunitario MediaWiki\cite{c_media_wiki}, y casos customizados para desarrollo sin usar excesivos recursos BookStack\cite{c_bookstack}.
+
+\subsubsection{PineDocs}
+\begin{lstlisting}[language=yml, style=yaml, caption={docker-compose.yml PineDocs prueba de concepto.}, label={lst:pinedocs} ]
+version: '3'
+services:
+  web:
+    image: xy2z/pinedocs:1.2.5
+    ports:
+      - 3000:80
+    volumes:
+      - ./data:/data/pinedocs
+\end{lstlisting}
+
+\subsubsection{MediaWiki}
+\begin{lstlisting}[ style=yaml, caption={docker-compose.yml MediaWiki prueba de concepto.}, label={lst:mediawiki} ]
+version: '3'
+services:
+  mediawiki:
+    image: mediawiki
+    restart: always
+    ports:
+      - 8080:80
+    links:
+      - database
+    volumes:
+      - ./images:/var/www/html/images
+      # After initial setup, download LocalSettings.php to the same directory as
+      # this yaml and uncomment the following line and use compose to restart
+      # the mediawiki service
+      #- ./LocalSettings.php:/var/www/html/LocalSettings.php
+  # This key also defines the name of the database host used during setup instead of the default "localhost"
+  database:
+    image: mariadb
+    restart: always
+    environment:
+      # @see https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/DefaultSettings.php
+      MYSQL_DATABASE: my_wiki
+      MYSQL_USER: wikiuser
+      MYSQL_PASSWORD: example
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+    volumes:
+      - ./db:/var/lib/mysql
+\end{lstlisting}
+
+\subsubsection{BookStack}
+
+\begin{lstlisting}[ style=yaml, caption={docker-compose.yml BookStack prueba de concepto.}, label={lst:bookstack} ]
+version: "3"
+services:
+  bookstack:
+    image: ghcr.io/linuxserver/bookstack
+    container_name: bookstack
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid  
+      - APP_URL=http://localhost:6875   
+      - DB_HOST=bookstack_db
+      - DB_USER=bookstack
+      - DB_PASS=p4ssw0rd
+      - DB_DATABASE=bookstackapp
+    volumes:
+      - ./app-data:/config
+    ports:
+      - "6875:80"
+    restart: unless-stopped
+    depends_on:
+      - bookstack_db
+
+  bookstack_db:
+    image: ghcr.io/linuxserver/mariadb
+    container_name: bookstack_db
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid    
+      - MYSQL_ROOT_PASSWORD=p4ssw0rd
+      - MYSQL_DATABASE=bookstackapp
+      - MYSQL_USER=bookstack
+      - MYSQL_PASSWORD=p4ssw0rd
+    volumes:
+      - ./db-data:/config
+    restart: unless-stopped
+\end{lstlisting}
+
+\subsection{Cloud Storage}
+Se han evaluado diferentes opciones de bajos y medianos recursos como servicios de almacenamiento de datos extendido y sincronizado (cloud).
+
+\subsubsection{Sea File}
+\begin{lstlisting}[ style=yaml, caption={docker-compose.yml SeaFile prueba de concepto.}, label={lst:sea_file} ]
+version: '2.0'
+services:
+  db:
+    image: mariadb:10.6
+    container_name: seafile-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=db_dev  # Requested, set the root's password of MySQL service.
+      - MYSQL_LOG_CONSOLE=true
+    volumes:
+      - ./db:/var/lib/mysql  # Requested, specifies the path to MySQL data persistent store.
+    networks:
+      - seafile-net
+
+  memcached:
+    image: memcached:1.6.18
+    container_name: seafile-memcached
+    entrypoint: memcached -m 256
+    networks:
+      - seafile-net
+          
+  seafile:
+    image: seafileltd/seafile-mc:latest
+    container_name: seafile
+    ports:
+      - "80:80"
+#     - "443:443"  # If https is enabled, cancel the comment.
+    volumes:
+      - ./seafile-data:/shared   # Requested, specifies the path to Seafile data persistent store.
+    environment:
+      - DB_HOST=db
+      - DB_ROOT_PASSWD=db_dev  # Requested, the value shuold be root's password of MySQL service.
+      - TIME_ZONE=Etc/UTC  # Optional, default is UTC. Should be uncomment and set to your local time zone.
+      - SEAFILE_ADMIN_EMAIL=me@example.com # Specifies Seafile admin user, default is 'me@example.com'.
+      - SEAFILE_ADMIN_PASSWORD=asecret     # Specifies Seafile admin password, default is 'asecret'.
+      - SEAFILE_SERVER_LETSENCRYPT=false   # Whether to use https or not.
+      - SEAFILE_SERVER_HOSTNAME=docs.seafile.com # Specifies your host name if https is enabled.
+    depends_on:
+      - db
+      - memcached
+    networks:
+      - seafile-net
+
+networks:
+  seafile-net:
+\end{lstlisting}
+
+\subsubsection{Samba server}
+\begin{lstlisting}[style=yaml, caption={docker-compose.yml Samba prueba de concepto.}, label={lst:samba} ]
+version: '3.4'
+services:
+  samba:
+    image: dperson/samba
+    environment:
+      TZ: 'EST5EDT'
+    networks:
+      - default
+    ports:
+      - "137:137/udp"
+      - "138:138/udp"
+      - "139:139/tcp"
+      - "445:445/tcp"
+    read_only: true
+    tmpfs:
+      - /tmp
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+      - /mnt:/mnt:z
+      - /mnt2:/mnt2:z
+    command: '-s "Mount;/mnt" -s "Bobs Volume;/mnt2;yes;no;no;bob" -u "bob;bobspasswd" -p'
+
+networks:
+  default:
+\end{lstlisting}
+
+\subsubsection{NextCloud}
+\begin{lstlisting}[ style=yaml, caption={docker-compose.yml NextCloud prueba de concepto.}, label={lst:nextcloud} ]
+version: "3.4"
+#https://gist.github.com/mrzapp/08947dd861bc826c4e02cee2d4da51ae
+networks: 
+    postgres: ~
+    redis: ~
+
+services:
+    # PostgreSQL
+    postgres: 
+        container_name: postgres
+        environment: 
+            - POSTGRES_PASSWORD=somepassword
+            - POSTGRES_USER=someuser
+        image: postgres:latest
+        restart: always
+        volumes: 
+            - "./postgres/init:/docker-entrypoint-initdb.d/"
+            - "./postgres/data:/var/lib/postgresql/data"
+            - "/etc/localtime:/etc/localtime:ro"
+        networks: 
+            - postgres
+
+    # NextCloud
+    nextcloud: 
+        container_name: nextcloud
+        depends_on: 
+          - postgres
+        image: nextcloud:latest
+        restart: always
+        ports:
+            - 1000:80
+        volumes: 
+            - "./nextcloud/data:/var/www/html/data"
+            - "./nextcloud/config:/var/www/html/config"
+            - "./nextcloud/themes:/var/www/html/themes"
+            - "./nextcloud/custom_apps:/var/www/html/custom_apps"
+            - "/etc/localtime:/etc/localtime:ro"
+        networks: 
+            - postgres
+            - redis
+
+    # Redis
+    redis:
+        container_name: redis
+        image: redis:latest
+        restart: always
+        networks:
+            - redis
+
+    # Collabora
+    collabora:
+        container_name: collabora
+        image: collabora/code:latest
+        cap_add: 
+            - MKNOD
+        environment: 
+            - domain=test\.local:9980
+            - username=someuser
+            - password=somepassword
+        ports:
+            - 9980:9980
+        restart: always
+        volumes:
+            - "/etc/localtime:/etc/localtime:ro"
+\end{lstlisting}
+
+\subsection{Reverse Proxy y https}\label{S:reverse_proxy_example}
+Aunque se ha evaluado Traefik\cite{c_traefik} y Ngix\cite{c_ngix}, pero debido a una mayor cantidad de soporte y documentación, se ha entendido que Ngix es mas apropiado como prueba de concepto resolutiva.
+
+\begin{lstlisting}[style=yaml, caption={docker-compose.yml Ngix proxy y Let's Encrypt prueba de concepto.}, label={lst:https_ngix} ]
+version: "3.5"
+services:
+  nginx:
+    container_name: nginx
+    image: nginxproxy/nginx-proxy
+    restart: unless-stopped
+    labels: 
+      - com.github.nginx-proxy.nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/vhost:/etc/nginx/vhost.d
+    logging:
+      options:
+          max-size: "10m"
+          max-file: "3"
+
+  letsencrypt-companion:
+    container_name: letsencrypt-companion
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/vhost:/etc/nginx/vhost.d
+      - ./nginx/acme:/etc/acme.sh
+    environment:
+      DEFAULT_EMAIL: ropnom5291@gmail.com
+      NGINX_PROXY_CONTAINER: nginx
+
+  hello-world:
+    container_name: hello-world
+    image: kornkitti/express-hello-world
+    expose:
+      - "8080"
+    environment:
+      VIRTUAL_HOST: test.programing.es
+      LETSENCRYPT_HOST: test.programing.es
+\end{lstlisting}
+
+\subsection{Ticketing}
+Después de evaluar diferentes softwares dockerizados de ticketing,he llegado a la conclusión que la gran mayoría de servicios externos gratuitos son bastante adecuados para  un equipo reducido.
+
+Por otra parte la mayor parte de servicios de ticketing son muy costosos en recursos por lo que el único ejemplo valido bajo en recursos es Planka\cite{c_planka}.
+
+\begin{lstlisting}[style=yaml, caption={docker-compose.yml Planka prueba de concepto.}, label={lst:planka} ]
+version: '3'
+services:
+  planka:
+    image: ghcr.io/plankanban/planka:latest
+    command: >
+      bash -c
+        "for i in `seq 1 30`; do
+          ./start.sh &&
+          s=$$? && break || s=$$?;
+          echo \"Tried $$i times. Waiting 5 seconds...\";
+          sleep 5;
+        done; (exit $$s)"
+    restart: unless-stopped
+    volumes:
+      - ./user-avatars:/app/public/user-avatars
+      - ./project-background-images:/app/public/project-background-images
+      - ./attachments:/app/private/attachments
+    ports:
+      - 3000:1337
+    environment:
+      - BASE_URL=http://localhost:3000
+      - TRUST_PROXY=0
+      - DATABASE_URL=postgresql://postgres@postgres/planka
+      - SECRET_KEY=notsecretkey
+
+      # Can be removed after installation
+      - DEFAULT_ADMIN_EMAIL=demo@demo.demo # Do not remove if you want to prevent this user from being edited/deleted
+      - DEFAULT_ADMIN_PASSWORD=demo
+      - DEFAULT_ADMIN_NAME=Demo Demo
+      - DEFAULT_ADMIN_USERNAME=demo
+
+      # related: https://github.com/knex/knex/issues/2354
+      # As knex does not pass query parameters from the connection string we
+      # have to use environment variables in order to pass the desired values, e.g.
+      # - PGSSLMODE=<value>
+
+      # Configure knex to accept SSL certificates
+      # - KNEX_REJECT_UNAUTHORIZED_SSL_CERTIFICATE=false
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:14-alpine
+    restart: unless-stopped
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=planka
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+
+\end{lstlisting}
+
+\subsection{SSO Ldap y Keycloak}\label{S:sso_example}
+Con el fin de implementar un SSO, se ha utilizado LDAP\cite{c_ldap} y una interfaz gráfica de configuración y un servicio de Keycloak\cite{c_keycloak}.
+
+\begin{lstlisting}[ style=yaml, caption={docker-compose.yml SSO LDAP-Keycloak prueba de concepto.}, label={lst:sso_keycloak} ]
+version: '3.8'
+services:      
+  mysql:
+    image: mysql:5.7.43
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=keycloak
+      - MYSQL_USER=keycloak
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=root_password
+    healthcheck:
+      test: "mysqladmin ping -u root -p$${MYSQL_ROOT_PASSWORD}"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.3
+    container_name: keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=mysql
+      - KC_DB_URL_HOST=mysql
+      - KC_DB_URL_DATABASE=keycloak
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=password
+      - KC_HEALTH_ENABLED=true
+    ports:
+      - "8080:8080"
+    command: start-dev
+    depends_on:
+      - mysql
+    healthcheck:
+      test: "curl -f http://localhost:8080/health/ready || exit 1"
+     
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: openldap
+    environment:
+      - LDAP_ORGANISATION="MyCompany Inc."
+      - LDAP_DOMAIN=mycompany.com
+    ports:
+      - "389:389"
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    container_name: phpldapadmin
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=openldap
+    ports:
+      - "6443:443"
+    depends_on:
+      - openldap
+\end{lstlisting}
+
+\subsection{VPN}
+En el caso de VPN se han evaluado las dos opciones mas utilizadas OpenVPN y wireguard, sin embargo se han descartado  los clientes multiprotocolo y comerciales por opciones ligeras, eficientes e integradas con una UI simple.
+
+\subsubsection{OpenVPN}
+Se ha buscado una versión especialmente ligera de openvpn y una interfaz web sencilla y fácil de gestionar:
+\begin{lstlisting}[ style=yaml, caption={docker-compose.yml OpenVPN con UI.}, label={lst:openvpn} ]
+---
+version: "3.5"
+#define networks
+networks:
+  openvpn:
+    name: openvpn
+    #external: true
+    internal: false
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: openvpn
+    ipam:
+      config:
+        - subnet: 192.168.88.0/24
+services:
+    openvpn:
+       container_name: openvpn
+       image: d3vilh/openvpn-server:latest-amd64
+       privileged: true
+       ports: 
+          - "1194:1194/udp"
+       environment:
+           TRUST_SUB: 10.0.70.0/24
+           GUEST_SUB: 10.0.71.0/24
+           HOME_SUB: 192.168.88.0/24
+       volumes:
+           - ./pki:/etc/openvpn/pki
+           - ./clients:/etc/openvpn/clients
+           - ./config:/etc/openvpn/config
+           - ./staticclients:/etc/openvpn/staticclients
+           - ./log:/var/log/openvpn
+           - ./fw-rules.sh:/opt/app/fw-rules.sh
+       cap_add:
+           - NET_ADMIN
+       networks:
+        - openvpn
+       restart: always
+
+    openvpn-ui:
+       container_name: openvpn-ui
+       image: d3vilh/openvpn-ui:latest-amd64
+       environment:
+           - OPENVPN_ADMIN_USERNAME=admin
+           - OPENVPN_ADMIN_PASSWORD=gagaZush
+       privileged: true
+       ports:
+           - "8080:8080/tcp"
+       volumes:
+           - ./:/etc/openvpn
+           - ./db:/opt/openvpn-ui/db
+           - ./pki:/usr/share/easy-rsa/pki
+           - /var/run/docker.sock:/var/run/docker.sock:ro
+       restart: always
+       networks:
+        - openvpn
+\end{lstlisting}
+
+\subsubsection{Wireguard}
+En el caso de wireguard se han encontrado dos soluciones alternativas que han sido utilizadas para crear el ejemplo de múltiples layer de vpn.
+
+\subsubsection{Wireguard UI}
+\begin{lstlisting}[style=yaml, caption={docker-compose.yml Wireguard prueba de concepto.}, label={lst:wireguard-ui} ]
+version: "3.8"
+networks:
+  external_net:
+    external: true
+    name: external_net
+services:
+  # WireGuard VPN service
+  wireguard:
+    image: linuxserver/wireguard:latest
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    volumes:
+      - ./config:/config
+    ports:
+      # Port of the WireGuard VPN server
+      - 51820:51820/udp
+
+  # WireGuard-UI service
+  wireguard-ui:
+    image: ngoduykhanh/wireguard-ui:latest
+    container_name: wireguard-ui
+    depends_on:
+      - wireguard
+    cap_add:
+      - NET_ADMIN
+    # Use the network of the 'wireguard' service
+    # This enables to show active clients in the status page
+    #network_mode: service:wireguard
+    environment:
+      - SENDGRID_API_KEY
+      - EMAIL_FROM_ADDRESS
+      - EMAIL_FROM_NAME
+      - SESSION_SECRET
+      - WGUI_USERNAME=admin
+      - WGUI_PASSWORD=password
+      - WG_CONF_TEMPLATE
+      - WGUI_MANAGE_START=true
+      - WGUI_MANAGE_RESTART=true
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    volumes:
+      - ./db:/app/db
+      - ./config:/etc/wireguard
+    ports:
+      # Port for WireGuard-UI
+      - 5000:5000
+  http:
+      image: nginxdemos/hello:latest
+      labels:
+        SERVICE_80_NAME: http
+        SERVICE_TAGS: production
+      ports:
+        - 8080:80
+\end{lstlisting}
+
+\subsubsection{Wireguard Easy}
+\begin{lstlisting}[style=yaml, caption={docker-compose.yml Wireguard Easy prueba de concepto.}, label={lst:wg-easy} ]
+version: "3.5"
+networks:
+  external_front:
+    name: external_front
+    #external: true
+    internal: false
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: docker_external
+    ipam:
+      config:
+        - subnet: 192.168.99.0/24
+services:
+  wg-easy:
+    environment:
+      - WG_HOST=programing.es
+      # Optional:
+      - PASSWORD=pass
+      # - WG_PORT=21821
+      - WG_DEFAULT_ADDRESS=10.252.1.x
+      # - WG_DEFAULT_DNS=1.1.1.1
+      # - WG_MTU=1420
+      # - WG_ALLOWED_IPS=192.168.15.0/24, 10.0.1.0/24
+      # - WG_PRE_UP=echo "Pre Up" > /etc/wireguard/pre-up.txt
+      # - WG_POST_UP=echo "Post Up" > /etc/wireguard/post-up.txt
+      # - WG_PRE_DOWN=echo "Pre Down" > /etc/wireguard/pre-down.txt
+      # - WG_POST_DOWN=echo "Post Down" > /etc/wireguard/post-down.txt
+      
+    image: weejewel/wg-easy
+    container_name: wg-easy
+    volumes:
+      - .config:/etc/wireguard
+    ports:
+      - "51820:51820/udp" # 51820/udp"
+      - "51821:51821/tcp"
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    networks:
+      - external_front
+
+  http2:
+    image: nginxdemos/hello:latest
+    labels:
+      SERVICE_80_NAME: http
+      SERVICE_TAGS: production
+    hostname: demo2.internal
+    # ports:
+    #   - 80
+    networks:
+      - external_front
+\end{lstlisting}
+
+\subsection{CI / CD}\label{S:ci_ejemplo}
+Se han realizado diferentes pruebas de CI/CD especialmente con jenkins sin embargo el ejemplo mas simple y dockerizable con bajos recursos es drone, así mismo se ha utilizado gitea\cite{c_gitea} como principal repositorio de control de versiones.
+
+\begin{lstlisting}[style=yaml, caption={docker-compose.yml Gitea-Drone CI prueba de concepto.}, label={lst:ci_gitea_drone} ]
+version: '3.6'
+services:
+  gitea:
+    container_name: gitea
+    image: gitea/gitea:${GITEA_VERSION:-1.20}
+    restart: unless-stopped
+    environment:
+      # https://docs.gitea.io/en-us/install-with-docker/#environments-variables
+      - APP_NAME="Gitea"
+      - USER_UID=1000
+      - USER_GID=1000
+      - RUN_MODE=prod
+      - DOMAIN=${IP_ADDRESS}
+      - SSH_DOMAIN=${IP_ADDRESS}
+      - HTTP_PORT=3000
+      - ROOT_URL=http://${IP_ADDRESS}:3000
+      - SSH_PORT=222
+      - SSH_LISTEN_PORT=22
+      - DB_TYPE=sqlite3
+    ports:
+      - "3000:3000"
+      - "222:22"
+    networks:
+      - cicd_net
+    volumes:
+      - ./gitea:/data
+
+  drone:
+    container_name: drone
+    image: drone/drone:${DRONE_VERSION:-2.20}
+    restart: unless-stopped
+    depends_on:
+      - gitea
+    environment:
+      # https://docs.drone.io/server/provider/gitea/
+      - DRONE_DATABASE_DRIVER=sqlite3
+      - DRONE_DATABASE_DATASOURCE=/data/database.sqlite
+      - DRONE_GITEA_SERVER=http://${IP_ADDRESS}:3000/
+      - DRONE_GIT_ALWAYS_AUTH=false
+      - DRONE_RPC_SECRET=${DRONE_RPC_SECRET}
+      - DRONE_SERVER_PROTO=http
+      - DRONE_SERVER_HOST=${IP_ADDRESS}:3001
+      - DRONE_TLS_AUTOCERT=false
+      - DRONE_USER_CREATE=${DRONE_USER_CREATE}
+      - DRONE_GITEA_CLIENT_ID=${DRONE_GITEA_CLIENT_ID}
+      - DRONE_GITEA_CLIENT_SECRET=${DRONE_GITEA_CLIENT_SECRET}
+    ports:
+      - "3001:80"
+      - "9001:9000"
+    networks:
+      - cicd_net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./drone:/data
+
+  drone-runner:
+    container_name: drone-runner
+    image: drone/drone-runner-docker:${DRONE_RUNNER_VERSION:-1.8}
+    restart: unless-stopped
+    depends_on:
+      - drone
+    environment:
+      # https://docs.drone.io/runner/docker/installation/linux/
+      # https://docs.drone.io/server/metrics/
+      - DRONE_RPC_PROTO=http
+      - DRONE_RPC_HOST=drone
+      - DRONE_RPC_SECRET=${DRONE_RPC_SECRET}
+      - DRONE_RUNNER_NAME="${HOSTNAME}-runner"
+      - DRONE_RUNNER_CAPACITY=2
+      - DRONE_RUNNER_NETWORKS=cicd_net
+      - DRONE_DEBUG=false
+      - DRONE_TRACE=false
+    ports:
+      - "3002:3000"
+    networks:
+      - cicd_net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  cicd_net:
+    name: cicd_net
+
+\end{lstlisting}
+
+\section{Wireguard LAN-VPN-LAN}
+Se ha seleccionado wireguard como vpn principal, sin embargo la configuración de wireguard tanto en servidor como en cliente se basa en script estáticos de re-direccionamiento y enrutado para las diferentes LAN, redes docker internas y VPN.
+
+En este apartado se muestra ejemplo de configuración de ambos, servidor y clientes par que el usuario a traves de la UI, pueda configurar manual y estáticamente sus decisiones.
+
+\subsection{Nat masquerade hace red docker}
+Para permitir la comunicación entre la red docker interna principal y la red VPN se puede utilizar un nat masquerada como indica la siguiente configuración de de ejemplo:
+
+\begin{lstlisting}[language=bash, caption={Ejemplo de configuracion servidor Nat masquerade}, label={lst:wireguard_server_nat} ]
+[Interface]
+Address = 10.10.1.0/24 # vpn range
+ListenPort = 51820 # vpn server port
+PrivateKey = <private key> # vpn server private key
+MTU = 1450 # vpn MTU size (1500 - overhead bytes encapsulated)
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -s 10.10.1.0/24 -o eth0 -j MASQUERADE; iptables -A INPUT -p udp -m udp --dport 21820 -j ACCEPT
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -s 10.10.1.0/24 -o eth0 -j MASQUERADE; iptables -D INPUT -p udp -m udp --dport 21820 -j ACCEPT
+Table = auto
+\end{lstlisting}
+
+\subsection{Script en cliente}
+Uno de los  punto manuales en este documentos, es la configuración de un elemento de la RED VPN y LAN como nodo intermedio de comunicaciones.
+Debido a la naturaleza del elemento normalmente router portable o una rasberry pi, requiere en todo momento de:
+\begin{itemize}
+    \item Tener el ip forwarding activado para permitir el enrutado de paquetes entre redes.
+    \item Definir su tabla de rutas, añadiendo manualmente que otras Redes permite enrutar y por que elemento. 
+    \item Incluir la configuración pertinente de su IP en la VPN y rango de su LAN para ser ofertada en otros elementos de la red
+\end{itemize}
+
+En un proceso iterativo, es decir, una vez definida el 'mapa' de las redes que vamos a interconectar y que elementos participan en dicha interconexión, es necesario agrupar el conjunto de LAN a ofrecerse al resto de clientes VPN, y manipular dicha configuración para obviar las redes LAN en los elementos interconectadores.
+
+Debido a la naturaleza de Wireguar UI, no es un mecanismo automatizado y debe hacerse a mano cliente a cliente. De igual manera aunque los elementos interconectores funcionen y la configuración de la VPN, es necesario editar manualmente los routers de las LAN para que indiquen adecuadamente a través de que elementos se puede acceder tanto ala VPN como al resto de LAN.
+
+\begin{lstlisting}[language=bash, caption={Ejemplo de configuracion servidor para homenets}, label={lst:wireguard_LAN_config} ]
+[Interface]
+PrivateKey = <private key>
+Address = <client ip>
+DNS = <internal dns proxy relay>
+PostUp = DROUTE=$(ip route | grep default | awk '{print $3}'); HOMENET=192.168.0.0/16; HOMENET2=10.0.0.0/8; HOMENET3=172.16.0.0/12; ip route add $HOMENET3 via $DROUTE;ip route add $HOMENET2 via $DROUTE; ip route add $HOMENET via $DROUTE;iptables -I OUTPUT -d $HOMENET -j ACCEPT;iptables -A OUTPUT -d $HOMENET2 -j ACCEPT; iptables -A OUTPUT -d $HOMENET3 -j ACCEPT;  iptables -A OUTPUT ! -o %i -m mark ! --mark $(wg show %i fwmark) -m addrtype ! --dst-type LOCAL -j REJECT
+PreDown = HOMENET=192.168.0.0/16; HOMENET2=10.0.0.0/8; HOMENET3=172.16.0.0/12; ip route del $HOMENET3 via $DROUTE;ip route del $HOMENET2 via $DROUTE; ip route del $HOMENET via $DROUTE; iptables -D OUTPUT ! -o %i -m mark ! --mark $(wg show %i fwmark) -m addrtype ! --dst-type LOCAL -j REJECT; iptables -D OUTPUT -d $HOMENET -j ACCEPT; iptables -D OUTPUT -d $HOMENET2 -j ACCEPT; iptables -D OUTPUT -d $HOMENET3 -j ACCEPT
+\end{lstlisting}
+
+Aunque es factible automatizar con protocolos estándar OSPF o RIP, la interconexión automática y anunciado de estas redes, requiere de funcionalidades a típicas de un router LAN por lo que se han descartado esta opción ante la falta de soporte en muchos router habituales.
+
+En el ejemplo \ref{lst:wireguard_LAN_config} podemos observar como el cliente cunado inicia la vpn wireguard, añade routas estáticas de destinación al vpn server, si estas son adecuadamente seteadas con las IP o elementos que interconectan las LAN, los clientes podran hacer peticiones a las LAN interconectadas por la VPN.
+
+
+\section{Mínimo Viable Producto}
+El MVP es una prueba de concepto que valida tanto las funcionalidades de servicios dockerizados en VPS, el rever proxy con https funciona, la generación de un dns interno y el uso de VPN para acceder a los servicios no públicos, así como una prueba de dos capas de VPN para servicios específicos.
+
+Al ser un propósito general de prueba, muchos servicios web como pueden ser una wiki, un respositorio espejo etc se han sustituido pro meros mock web, que permiten visionar un mensaje de 'hello word' o propiedades del servidor web que los ejecuta.
+
+\begin{lstlisting}[style=yaml, caption={docker-compose.yml MVP prueba de concepto.}, label={lst:mvp_mock} ]
+version: "3.5"
+
+#define networks
+networks:
+  external:
+    name: z_external
+    #external: true
+    internal: false
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: external
+    ipam:
+      config:
+        - subnet: 192.168.66.0/24
+  vpn_layer1:
+    name: vpn
+    #external: true
+    internal: false
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: vpn_layer1
+    ipam:
+      config:
+        - subnet: 192.168.99.0/24
+  vpn_layer2:
+    name: depp_vpn
+    #external: true
+    internal: false
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: vpn_layer2
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
+
+services:
+
+# ------------------
+# Public services
+# ------------------
+# all manage by ngix-proxy and let's encrypt
+#
+
+  # reverse proxy service
+  nginx:
+    container_name: nginx-proxy
+    image: nginxproxy/nginx-proxy
+    restart: unless-stopped
+    labels: 
+      - com.github.nginx-proxy.nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/vhost:/etc/nginx/vhost.d
+    logging:
+      options:
+          max-size: "10m"
+          max-file: "3"
+    networks:
+      - external
+
+  # Let's encrypt service (tls certificates for https service)
+  letsencrypt-companion:
+    container_name: letsencrypt-companion
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/vhost:/etc/nginx/vhost.d
+      - ./nginx/acme:/etc/acme.sh
+    environment:
+      DEFAULT_EMAIL: ropnom5291@gmail.com
+      NGINX_PROXY_CONTAINER: nginx
+    networks:
+      - external
+
+#
+# Wordpress blog page
+#
+  mariadb:
+    container_name: mariadb
+    image: docker.io/bitnami/mariadb:11.0
+    volumes:
+      - './mariadb/:/bitnami/mariadb'
+    environment:
+      #ALLOW_EMPTY_PASSWORD: "yes"
+      MARIADB_USER: ${MARIADB_USER:-bn_wordpress}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-p4ssw0rd_wordpress}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-bitnami_wordpress}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASS:-root_pass}
+    networks:
+      - external
+      
+  wordpress:
+    container_name: wordpress_blog
+    image: docker.io/bitnami/wordpress:6
+    # ports:
+    #   - '28080:8080'
+    #   - '28443:8443'
+    expose:
+      - '8080'
+    volumes:
+      - './wordpress/:/bitnami/wordpress'
+    depends_on:
+      - mariadb
+      - nginx
+    environment:
+      VIRTUAL_HOST: blog.programing.es
+      VIRTUAL_PORT: 8080
+      LETSENCRYPT_HOST: blog.programing.es
+      WORDPRESS_DATABASE_HOST: mariadb
+      WORDPRESS_DATABASE_PORT_NUMBER: 3306
+      WORDPRESS_DATABASE_NAME: ${MARIADB_DATABASE:-bitnami_wordpress}
+      WORDPRESS_DATABASE_USER: ${MARIADB_USER:-bn_wordpress}
+      WORDPRESS_DATABASE_PASSWORD: ${MARIADB_PASSWORD:-p4ssw0rd_wordpress}
+      WORDPRESS_USERNAME: ${WORDPRESS_USER:-ropnom}
+      WORDPRESS_PASSWORD: ${WORDPRESS_PASSWORD:-tfg}
+      WORDPRESS_EMAIL: ${WORDPRESS_EMAIL:-rodrigo.sc@programing.es}
+      WORDPRESS_FIRST_NAME: ${WORDPRESS_FIRST_NAME:-Rodrigo}
+      WORDPRESS_LAST_NAME: ${WORDPRESS_LAST_NAME:-Sampedro}
+      WORDPRESS_BLOG_NAME: ${WORDPRESS_BLOG_NAME:-"Programar Ingenieria"}
+      WORDPRESS_PLUGINS: ${WORDPRESS_PLUGINS}
+      WORDPRESS_SMTP_HOST: ${WORDPRESS_SMTP_HOST}
+      WORDPRESS_SMTP_PORT: ${WORDPRESS_SMTP_PORT}
+      WORDPRESS_SMTP_USER: ${WORDPRESS_SMTP_USER}
+      WORDPRESS_SMTP_PASSWORD: ${WORDPRESS_SMTP_PASSWORD}
+      WORDPRESS_ENABLE_REVERSE_PROXY: "yes"
+    networks:
+      - external
+
+#
+# Other services like next cloud service
+#
+
+#
+# VPN services
+#
+  # WireGuard VPN service
+  wireguard:
+    container_name: wireguard_vpn1
+    image: linuxserver/wireguard:latest
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    volumes:
+      - ./vpn/config:/config
+    environment:
+      VIRTUAL_HOST: vpn.programing.es
+      LETSENCRYPT_HOST: vpn.programing.es
+      VIRTUAL_PORT: 5000
+    ports:
+      # Port of the WireGuard VPN server
+      - 21820:21820/udp
+      # UI port
+      # - 21500:5000
+    networks:
+      vpn_layer1:
+      external:
+
+  # WireGuard-UI service
+  wireguard-ui:
+    container_name: wireguard-ui-vpn1
+    image: ngoduykhanh/wireguard-ui:latest
+    depends_on:
+      - wireguard
+    cap_add:
+      - NET_ADMIN
+    environment:
+      # SENDGRID_API_KEY:
+      # EMAIL_FROM_ADDRESS:
+      # EMAIL_FROM_NAME:
+      # SESSION_SECRET:
+      WGUI_USERNAME: admin
+      WGUI_PASSWORD: pass
+      # WG_CONF_TEMPLATE:
+      WGUI_MANAGE_START: "true"
+      WGUI_MANAGE_RESTART: "true"
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    volumes:
+      - ./vpn/ui/db:/app/db
+      - ./vpn/config:/etc/wireguard
+    # Use the network of the 'wireguard' service
+    # This enables to show active clients in the status page
+    network_mode: service:wireguard
+    # ports: #using service:wireguard
+    #   # Port for WireGuard-UI
+    #   - 21500:5000
+    # networks:
+    #   - external
+
+  wg-easy:
+    image: weejewel/wg-easy
+    container_name: wg-easy
+    volumes:
+      - ./config:/etc/wireguard
+    # ports:
+    #   - "51820:51820/udp"
+    #   - "51821:51821/tcp"
+    restart: unless-stopped
+    environment:
+      WG_HOST: vpn2.internal      
+      PASSWORD: pass
+      WG_PORT: 51820
+      WG_DEFAULT_ADDRESS: 10.252.1.x
+      WG_DEFAULT_DNS: 192.168.100.53
+      WG_PERSISTENT_KEEPALIVE: 20
+      WG_MTU: 1400
+      WG_ALLOWED_IPS: "10.252.1.0/24,192.168.100.0/24"
+      # - WG_PRE_UP=echo "Pre Up" > /etc/wireguard/pre-up.txt
+      WG_POST_UP: "DETH=$$(ip route | grep default | awk '{print $$5}');iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -s 10.252.1.0/24 -o $$DETH -j MASQUERADE"
+      # - WG_PRE_DOWN=echo "Pre Down" > /etc/wireguard/pre-down.txt
+      WG_POST_DOWN: "DETH=$$(ip route | grep default | awk '{print $$5}');iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -s 10.252.1.0/24 -o $$DETH -j MASQUERADE"
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    networks:
+      vpn_layer1:
+        ipv4_address: 192.168.99.100
+        aliases:
+          - vpn2.internal
+      vpn_layer2:
+
+  # VPN dns service
+  dns-proxy:
+    container_name: dns-proxy_mageddo
+    image: defreitas/dns-proxy-server:3.14.5
+    # ports:
+    #   - "192.168.99.53:53:53/udp"
+    #   - "5380:5380"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/resolv.conf:/etc/resolv.conf
+      - ./dns/config/:/app/conf/
+    environment:
+      MG_REGISTER_CONTAINER_NAMES: "true"
+    networks:
+      vpn_layer1:
+        ipv4_address: 192.168.99.53 #fix ip for relay dns
+        aliases:
+          - "dns1.internal"
+      vpn_layer2:
+        ipv4_address: 192.168.100.53 #fix ip for relay dns
+        aliases:
+          - "dns2.internal"
+
+  dns-proxy2:
+    container_name: dns-proxy-dynamic
+    image: carlsverre/damn-simple-dns-proxy:latest
+    # ports:
+    #   - "192.168.99.53:53:53/udp"
+    networks:
+        vpn_layer1:
+          ipv4_address: 192.168.99.54 #fix ip for main dns
+  
+
+  # demo web
+  http:
+    image: nginxdemos/hello:latest
+    labels:
+      SERVICE_80_NAME: http
+      SERVICE_TAGS: production
+    hostname: demo.internal
+    # ports:
+    #   - 80
+    networks:
+      vpn_layer1:
+        aliases:
+          - webtest.internal
+    depends_on:
+      - dns-proxy
+      - dns-proxy2
+
+  http2:
+    image: nginxdemos/hello:latest
+    labels:
+      SERVICE_80_NAME: http
+      SERVICE_TAGS: production
+    hostname: demo2.internal
+    # ports:
+    #   - 80
+    networks:
+      vpn_layer2:
+        aliases:
+          - webtest2.internal
+    depends_on:
+      - dns-proxy
+      - dns-proxy2
+
+
+  hello-world:
+    container_name: hello-world
+    image: kornkitti/express-hello-world
+    expose:
+      - "8080"
+    environment:
+      VIRTUAL_HOST: test.programing.es
+      LETSENCRYPT_HOST: test.programing.es
+    networks:
+      - external
+
+
+\end{lstlisting}
+
+\section{Aprovisionamiento básico Ansible}\label{S:ansible_ejemplo}
+Debido a restricciones de seguridad y privacidad, así como evitar futuros ataques a la plataforma de Elenkar únicamente se muestras los procesos de abastecimiento junto a segurización básica del VPS.
+
+Véase código del proyecto \cite{c_code}.
