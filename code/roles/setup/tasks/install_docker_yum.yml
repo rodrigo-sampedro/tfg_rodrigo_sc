@@ -1,0 +1,63 @@
+---
+
+- name: Remove docker if installed from CentOS repo
+    yum:
+      name:
+        - docker
+        - docker-client
+        - docker-client-latest
+        - docker-common
+        - docker-latest
+        - docker-latest-logrotate
+        - docker-logrotate
+        - docker-engine
+      state: removed
+
+- name: Install yum utils
+  yum:
+    name: "{{ item }}"
+    state: latest
+    update_cache: true
+  with_items:
+  - yum-utils
+  - device-mapper-persistent-data
+  - lvm2
+
+- name: "Configuring docker-ce repo"
+  get_url:
+  url: https://download.docker.com/linux/centos/docker-ce.repo
+  dest: /etc/yum.repos.d/docker-ce.repo
+  mode: 0644
+
+- name: " Installing Docker latest version"
+  yum:
+    name: {{ item }}
+    state: present
+    update_cache: true
+  with_items:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-compose
+
+- name: Ensure group "docker" exists with correct gid
+  group:
+    name: docker
+    state: present
+    gid: 997
+
+- name: adding existing user "{{ deployer_user }}" to group docker
+  user:
+    name: "{{ deployer_user }}"
+    groups: docker
+    append: yes
+
+- name: Enable service docker
+  service:
+    name: docker
+    enabled: yes
+
+- name: Start service docker
+  service:
+    name: docker
+    state: started

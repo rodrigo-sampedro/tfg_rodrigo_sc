@@ -1,0 +1,39 @@
+---
+- name: Debug Task message
+  ansible.builtin.debug:
+    msg:
+    - "Rol Setup arrancado"
+
+# sub set of Gather required
+- name: Collect Required Server Data
+  setup:
+    gather_subset:
+      - '!all'
+      - '!any'
+      - '!min'
+      - '!facter'
+      - 'pkg_mgr' # required to filter OS and packager manager
+      - 'network' # network ip security rules
+
+- name: Debug var
+  ansible.builtin.debug:
+    msg:
+    # - "{{ hostvars[inventory_hostname] }}"
+    # - "{{ my_client_ipv4['address'] }}"
+    - "{{ f2b_jail_local }}"
+
+- name: Machine Configure
+  import_tasks: machine_configuration.yml
+
+- name: Machine Update & Install Essentials
+  import_tasks: machine_update.yml
+
+- name: Setup ansible user
+  import_tasks: deployer_user.yml
+
+- name: Install Docker Debian derivate
+  import_tasks: install_docker_apt.yml
+  when: ansible_pkg_mgr == "apt"
+ 
+- name: Secure basic machine
+  import_tasks: machine_secure.yml

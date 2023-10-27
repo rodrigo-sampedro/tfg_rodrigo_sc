@@ -1,0 +1,23 @@
+---
+- name: Delete existing known host file
+  file:
+    path: "{{playbook_dir}}/{{ssh_known_hostsfile}}"
+    state: absent
+
+- name: Creates known host file
+  file:
+    path: "{{playbook_dir}}/{{ssh_known_hostsfile}}"
+    mode: 0644 # just owner -rw others just read
+    state: touch # create file if not exists
+    modification_time: preserve
+    access_time: preserve
+
+# - name: Add ssh-key to local known_hosts
+#   command: "ssh-keyscan -H {{ hostvars[item]['ansible_host'] }} >> {{ playbook_dir }}/{{ ssh_known_hostsfile }}"
+#   register: command
+#   with_items:
+#   - "{{ groups['setup'] }}"
+
+# - name: display the contents of the 'keyscan_key' variable
+#   debug: 
+#     var: command

@@ -1,0 +1,10 @@
+---
+# vars file for setup
+ansible_python_interpreter: /usr/bin/python3
+ssh_known_hostsfile: ansible_ssh_known_host
+ssh_keys_folder: ssh-keys
+ssh_key_rsa_filename: id_rsa_ansible
+ssh_key_dsa_filename: id_dsa_ansible
+ssh_key_ecdsa_filename: id_ecdsa_ansible
+ssh_key_ed25519_filename: id_ed25519_ansible
+# ssh_passphrase: passphrase

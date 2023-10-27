@@ -1,0 +1,58 @@
+---
+- name: Install apt-transport-https
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - lsb-release
+      - gnupg
+    state: latest
+    update_cache: true
+
+- name: Add signing key
+  apt_key:
+    url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+    state: present
+
+- name: Add repository into sources list
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+
+- name: Update apt package cache.
+  apt:
+    update_cache: yes
+    cache_valid_time: 600
+
+- name: Install Docker
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose
+    state: latest
+    update_cache: true
+
+- name: Ensure group "docker" exists with correct gid
+  group:
+    name: docker
+    state: present
+    gid: 997
+
+- name: adding existing user "{{ deployer_user }}" to group docker
+  user:
+    name: "{{ deployer_user }}"
+    groups: docker
+    append: yes
+
+- name: Enable service docker
+  service:
+    name: docker
+    enabled: yes
+
+- name: Start service docker
+  service:
+    name: docker
+    state: started

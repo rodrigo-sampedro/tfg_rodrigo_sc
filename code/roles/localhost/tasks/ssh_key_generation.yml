@@ -1,0 +1,51 @@
+---
+- name: Creates directory ssh keys
+  file:
+    path: "{{playbook_dir}}/{{ssh_keys_folder}}"
+    state: directory
+
+# Generate RSA Key for elenkar
+- name: Generate RSA SSH key {{ssh_key_rsa_filename}}
+  openssh_keypair:
+    type: rsa
+    size: 4096
+    path: '{{playbook_dir}}/{{ssh_keys_folder}}/{{ssh_key_rsa_filename}}'
+    force: no
+    #passphrase: "{{ssh_passphrase}}"
+    #mode: '644' 
+
+# Generate DSA Key for elenkar
+- name: Generate DSA SSH key {{ssh_key_dsa_filename}}
+  openssh_keypair:
+    type: dsa
+    size: 1024
+    path: '{{playbook_dir}}/{{ssh_keys_folder}}/{{ssh_key_dsa_filename}}'
+    force: no
+    #passphrase: "{{ssh_passphrase}}"
+    #mode: '644'
+
+# Generate ECDSA Key for elenkar
+- name: Generate ECDSA SSH key {{ssh_key_ecdsa_filename}}
+  openssh_keypair:
+    type: ecdsa
+    size: 256
+    path: '{{playbook_dir}}/{{ssh_keys_folder}}/{{ssh_key_ecdsa_filename}}'
+    force: no
+    #passphrase: "{{ssh_passphrase}}"
+    #mode: '644'
+
+# Generate EC25519 Key for elenkar
+- name: Generate ED25519 SSH key {{ssh_key_ed25519_filename}}
+  openssh_keypair:
+    type: ed25519
+    size: 256
+    path: '{{playbook_dir}}/{{ssh_keys_folder}}/{{ssh_key_ed25519_filename}}'
+    force: no
+    #passphrase: "{{ssh_passphrase}}"
+    #mode: '644'
+
+- name: "Search public keys files in {{ playbook_dir }}/{{ ssh_keys_folder }}"
+  shell: "ls | grep pub"
+  args:
+    chdir: "{{ playbook_dir }}/{{ ssh_keys_folder }}/"
+  register: found_files

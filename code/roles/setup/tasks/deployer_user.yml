@@ -1,0 +1,40 @@
+---
+  - name: Create Administrator group
+    group:
+      name: administrator
+      state: present
+
+  - name: Allow 'administrator' group to have passwordless sudo
+    lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: '^%administrator'
+      line: '%administrator ALL=(ALL) NOPASSWD: ALL'
+      validate: 'visudo -cf %s'
+
+  - name: Add '{{ deployer_user }}' user to administator group
+    user:
+      name: "{{ deployer_user }}"
+      comment: ansible deployment user
+      shell: /bin/bash
+      groups: administrator
+      uid: 1100
+      append: yes
+      state: present
+      createhome: yes
+      
+  # Authorizing SSH keys
+  - name: Authorizing SSH keys in {{ deployer_user }} user
+    authorized_key:
+      user: "{{ deployer_user }}"
+      state: present
+      key: "{{ lookup('file', '{{ playbook_dir }}/{{ ssh_keys_folder }}/{{ item }}') }}"
+    with_items: "{{  hostvars['localhost']['found_files']['stdout_lines'] }}"
+
+  - name: "Create alias file for {{ deployer_user }}"
+    template:
+      src: bash_aliases.j2
+      dest: '/home/{{ deployer_user }}/.bash_aliases'
+      owner: '{{ deployer_user }}'
+      group: '{{ deployer_user }}'
+      mode: '0644'

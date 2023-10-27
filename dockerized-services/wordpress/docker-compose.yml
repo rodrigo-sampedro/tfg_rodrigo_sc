@@ -1,0 +1,51 @@
+version: "3.5"
+services:
+#
+# Wordpress blog page
+#
+  mariadb:
+    container_name: mariadb
+    image: docker.io/bitnami/mariadb:11.0
+    ports:
+      - '23306:3306'
+    volumes:
+      - './mariadb/:/bitnami/mariadb'
+    environment:
+      #ALLOW_EMPTY_PASSWORD: "yes"
+      MARIADB_USER: ${MARIADB_USER:-bn_wordpress}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-p4ssw0rd_wordpress}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-bitnami_wordpress}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASS:-root_pass}
+      
+  wordpress:
+    container_name: wordpress
+    image: docker.io/bitnami/wordpress:6
+    ports:
+      - '28080:8080'
+      - '28443:8443'
+    volumes:
+      - './wordpress/:/bitnami/wordpress'
+    depends_on:
+      - mariadb
+      - nginx
+    environment:
+      VIRTUAL_HOST: blog.programing.es
+      VIRTUAL_PORT: 8080
+      LETSENCRYPT_HOST: blog.programing.es
+      WORDPRESS_DATABASE_HOST: mariadb
+      WORDPRESS_DATABASE_PORT_NUMBER: 3306
+      WORDPRESS_DATABASE_NAME: ${MARIADB_DATABASE:-bitnami_wordpress}
+      WORDPRESS_DATABASE_USER: ${MARIADB_USER:-bn_wordpress}
+      WORDPRESS_DATABASE_PASSWORD: ${MARIADB_PASSWORD:-p4ssw0rd_wordpress}
+      WORDPRESS_USERNAME: ${WORDPRESS_USER:-ropnom}
+      WORDPRESS_PASSWORD: ${WORDPRESS_PASSWORD:-tfg}
+      WORDPRESS_EMAIL: ${WORDPRESS_EMAIL:-rodrigo.sc@programing.es}
+      WORDPRESS_FIRST_NAME: ${WORDPRESS_FIRST_NAME:-Rodrigo}
+      WORDPRESS_LAST_NAME: ${WORDPRESS_LAST_NAME:-Sampedro}
+      WORDPRESS_BLOG_NAME: ${WORDPRESS_BLOG_NAME:-"Programar Ingenieria"}
+      WORDPRESS_PLUGINS: ${WORDPRESS_PLUGINS}
+      WORDPRESS_SMTP_HOST: ${WORDPRESS_SMTP_HOST}
+      WORDPRESS_SMTP_PORT: ${WORDPRESS_SMTP_PORT}
+      WORDPRESS_SMTP_USER: ${WORDPRESS_SMTP_USER}
+      WORDPRESS_SMTP_PASSWORD: ${WORDPRESS_SMTP_PASSWORD}
+      WORDPRESS_ENABLE_REVERSE_PROXY: "yes"

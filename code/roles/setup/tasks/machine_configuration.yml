@@ -1,0 +1,38 @@
+---
+# Configure hostname server
+- name: Set static hostname
+  hostname:
+    name: "{{ my_client_domain }}"
+
+# Configure timezone of server
+- name: Set timezone.
+  timezone:
+    name: "{{ tmzone }}"
+  notify:
+    - restart cron
+    - restart rsyslog
+
+# Configure File limits global
+- name: Update file limits for user
+  blockinfile:
+    path: /etc/security/limits.conf
+    insertbefore: '# End of file'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK'
+    block: |
+      * soft nofile 1048576
+      * hard nofile 1048576
+      * soft nproc 1048576
+      * hard nproc 1048576
+
+# Configure etc host, native-local dns
+- name: Add FQDN to /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.1\.1'
+    line: "127.0.1.1 localhost {{ inventory_hostname }} {{ inventory_hostname_short }} {{ my_client_domain }} {{ my_client_ipv4 }} server.loc"
+    state: present
+    
+# Setup base user folder SKEL
+# TODO
+
+# TODO: minor things, login message other custom things

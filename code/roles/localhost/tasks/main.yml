@@ -1,0 +1,11 @@
+---
+- name: Debug Task message
+  ansible.builtin.debug:
+    msg:
+    - "Rol Localhost Running"
+    
+- name: Generate SSH keys
+  import_tasks: ssh_key_generation.yml
+
+- name: Create Known Host file
+  import_tasks: create_known_host.yml

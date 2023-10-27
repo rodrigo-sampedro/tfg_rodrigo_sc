@@ -1,0 +1,58 @@
+---
+# SSH variables for connection
+ssh_known_hostsfile: "{{ ssh_known_hostsfile | default('ansible_ssh_known_host') }}"
+ssh_keys_folder: ssh-keys
+deployer_user: deployer
+ssh_port: 22014
+
+# Machine configuration vars
+tmzone: "Europe/Madrid"
+my_client_ipv4: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address']| default(ansible_host) }}"
+my_client_domain: "{{ hostvars[inventory_hostname]['domain']| default(ansible_host) }}"
+
+# Install basic software
+apt_essentials:
+      # basic repo deb apt software
+      - apt-transport-https
+      - ca-certificates 
+      - gnupg
+      # essentials os
+      - lsb-release
+      - build-essential
+      - htop
+      - sudo
+      - needrestart
+      - net-tools
+      - resolvconf
+      - rsync
+      - vim-nox
+      - firewalld
+      - fail2ban
+      # essentials tools
+      - curl
+      - git      
+      - pwgen           
+      - unzip
+
+apt_secure:
+      - unattended-upgrades
+      - fail2ban
+      - firewalld
+
+# basic segurity vars
+sudo_timeout: 20
+vimrc: |
+  set mouse-=a
+f2b_jail_local: |
+  [DEFAULT]
+  banaction = firewallcmd-rich-rules[actiontype=]
+  banaction_allports = firewallcmd-rich-rules[actiontype=]
+  ignoreip = 127.0.0.1/8 ::1 localhost {{ my_client_ipv4 }} {{ my_client_domain }}
+  findtime = 15m
+  bantime = 2h
+  maxretry = 5
+
+  [sshd]
+  enabled = true
+  maxretry = 3
+  port = {{ ssh_port }}
